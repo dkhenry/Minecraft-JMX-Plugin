@@ -27,10 +27,10 @@ public class MineJMXPlayerListener extends PlayerListener {
 			plugin.addPlayer(player.getName(),playerData) ;
 			return ;
 		}
-		playerData.incNumberOfLogins() ;
-		playerData.setActive(1) ;
-		plugin.serverData.incNumberOfPlayers() ;
+		playerData.logIn();
 
+		// ...and the server statistics
+		plugin.serverData.incNumberOfPlayers() ;
 	}
 
 	@Override
@@ -47,8 +47,9 @@ public class MineJMXPlayerListener extends PlayerListener {
 			plugin.addPlayer(player.getName(),playerData) ;
 			return ;
 		}
-		playerData.setActive(0) ;
-		plugin.serverData.decNumberOfPlayers() ;
+		playerData.logOut();
 
+		// ...and the server statistics
+		plugin.serverData.decNumberOfPlayers() ;
 	}
 }
