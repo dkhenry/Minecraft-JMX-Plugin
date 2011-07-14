@@ -25,7 +25,6 @@ public class MineJMXPlayerListener extends PlayerListener {
 			plugin.log.info("MineJMX Found a new first time Player") ;
 			playerData = new PlayerData() ;
 			plugin.addPlayer(player.getName(),playerData) ;
-			return ;
 		}
 		playerData.incNumberOfLogins() ;
 		playerData.setActive(1) ;
@@ -45,7 +44,6 @@ public class MineJMXPlayerListener extends PlayerListener {
 			plugin.log.info("MineJMX Found an Unregisted Player in a place where an Unregisted Player should not be found") ;
 			playerData = new PlayerData() ;
 			plugin.addPlayer(player.getName(),playerData) ;
-			return ;
 		}
 		playerData.setActive(0) ;
 		plugin.serverData.decNumberOfPlayers() ;
