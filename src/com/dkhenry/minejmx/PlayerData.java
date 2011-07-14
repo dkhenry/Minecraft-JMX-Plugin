@@ -23,7 +23,7 @@ public class PlayerData implements DynamicMBean {
 	private int blocksDestroyed = 0; /**< Done */
 	private int itemsCrafted = 0;
 	private Map<String,Integer> mobsKilled ; /** Done */
-	private int deaths = 0 ; /** Done */
+	private int deaths = 0 ; /**< Done */
 	private int active = 0 ; /**< Done */
 
 	// internal use
@@ -207,7 +207,7 @@ public class PlayerData implements DynamicMBean {
 		attributes[7] = new OpenMBeanAttributeInfoSupport("skeletonsKilled","Number of Skeletons Killed",SimpleType.INTEGER, true, false,false);
 		attributes[8] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
 		attributes[9] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
-		attributes[10] = new OpenMBeanAttributeInfoSupport("playTime","Amount Of Time People have played on this Server",SimpleType.INTEGER, true, false,false);
+		attributes[10] = new OpenMBeanAttributeInfoSupport("deaths","Number of deaths on this server",SimpleType.INTEGER, true, false,false);
 		attributes[11] = new OpenMBeanAttributeInfoSupport("active","If this player is active",SimpleType.INTEGER, true, false,false);
 
 	//Build the info
