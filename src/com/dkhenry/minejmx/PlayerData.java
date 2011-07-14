@@ -1,5 +1,6 @@
 package com.dkhenry.minejmx;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +17,8 @@ import javax.management.openmbean.OpenMBeanInfoSupport;
 import javax.management.openmbean.SimpleType;
 
 public class PlayerData implements DynamicMBean {
-
-	private int timeOnServer = 0;
+	// stuff we're exporting
+	private long timeOnServer = 0;/**< In Progress */
 	private int numberOfLogins = 0; /**< Done */
 	private int blocksPlaced = 0; /**< Done */
 	private int blocksDestroyed = 0; /**< Done */
@@ -25,6 +26,9 @@ public class PlayerData implements DynamicMBean {
 	private Map<String,Integer> mobsKilled ; /** Done */
 	private int deaths = 0 ; /** Done */
 	private int active = 0 ; /**< Done */
+
+	// internal use
+	private long loggedInTimestamp = -1; // timestamp of when the player logged in; -1 if they're not logged in
 
 	public PlayerData() {
 		mobsKilled = new HashMap<String,Integer>() ;
@@ -36,6 +40,10 @@ public class PlayerData implements DynamicMBean {
 
 	public void setTimeOnServer(int timeOnServer) {
 		this.timeOnServer = timeOnServer;
+	}
+
+	public void incTimeOnServerBy(long ms) {
+		this.timeOnServer += ms;
 	}
 
 	public int getNumberOfLogins() {
@@ -104,10 +112,30 @@ public class PlayerData implements DynamicMBean {
 
 	public void incNumberOfLogins() {
 		this.numberOfLogins++ ;
-
 	}
+
 	public void setActive(int active) {
 		this.active = active;
+	}
+
+	public void setLoggedInTimestamp(long timestamp) {
+		this.loggedInTimestamp = timestamp;
+	}
+
+	public long getLoggedInTimestamp() {
+		return this.loggedInTimestamp;
+	}
+
+	public void logIn() {
+		this.incNumberOfLogins();
+		this.setActive(1);
+		this.setLoggedInTimestamp(System.currentTimeMillis());
+	}
+
+	public void logOut() {
+		this.setActive(0);
+		this.incTimeOnServerBy(System.currentTimeMillis() - this.loggedInTimestamp);
+		this.setLoggedInTimestamp(-1);
 	}
 
 	public int getActive() {
@@ -170,17 +198,18 @@ public class PlayerData implements DynamicMBean {
 	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[11];
 
 	//Build the Attributes
-	    attributes[0] = new OpenMBeanAttributeInfoSupport("numberOfLogins","Number of Logins to this Server",SimpleType.INTEGER, true, false,false);
-	    attributes[1] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.INTEGER, true, false,false);
-	    attributes[2] = new OpenMBeanAttributeInfoSupport("blocksDestroyed","Number of Blocks Destroyed",SimpleType.INTEGER, true, false,false);
-	    attributes[3] = new OpenMBeanAttributeInfoSupport("itemsCrafted","Number of items Crafted",SimpleType.DOUBLE, true, false,false);
-	    attributes[4] = new OpenMBeanAttributeInfoSupport("mobsKilled","Number Of Mobs Killed",SimpleType.DOUBLE, true, false,false);
-	    attributes[5] = new OpenMBeanAttributeInfoSupport("creepersKilled","Number of Creepers Killed",SimpleType.INTEGER, true, false,false);
-	    attributes[6] = new OpenMBeanAttributeInfoSupport("skeletonsKilled","Number of Skeletons Killed",SimpleType.INTEGER, true, false,false);
-	    attributes[7] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
-	    attributes[8] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
-	    attributes[9] = new OpenMBeanAttributeInfoSupport("playTime","Amount Of Time People have played on this Server",SimpleType.INTEGER, true, false,false);
-	    attributes[10] = new OpenMBeanAttributeInfoSupport("active","If this player is active",SimpleType.INTEGER, true, false,false);
+		attributes[0] = new OpeNMBeanAttributeInfoSupport("timeOnServer", "Time spent on this server in milliseconds", SimpleType.LONG, true, false, false);
+		attributes[1] = new OpenMBeanAttributeInfoSupport("numberOfLogins","Number of Logins to this Server",SimpleType.INTEGER, true, false,false);
+		attributes[2] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.INTEGER, true, false,false);
+		attributes[3] = new OpenMBeanAttributeInfoSupport("blocksDestroyed","Number of Blocks Destroyed",SimpleType.INTEGER, true, false,false);
+		attributes[4] = new OpenMBeanAttributeInfoSupport("itemsCrafted","Number of items Crafted",SimpleType.DOUBLE, true, false,false);
+		attributes[5] = new OpenMBeanAttributeInfoSupport("mobsKilled","Number Of Mobs Killed",SimpleType.DOUBLE, true, false,false);
+		attributes[6] = new OpenMBeanAttributeInfoSupport("creepersKilled","Number of Creepers Killed",SimpleType.INTEGER, true, false,false);
+		attributes[7] = new OpenMBeanAttributeInfoSupport("skeletonsKilled","Number of Skeletons Killed",SimpleType.INTEGER, true, false,false);
+		attributes[8] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
+		attributes[9] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
+		attributes[10] = new OpenMBeanAttributeInfoSupport("playTime","Amount Of Time People have played on this Server",SimpleType.INTEGER, true, false,false);
+		attributes[11] = new OpenMBeanAttributeInfoSupport("active","If this player is active",SimpleType.INTEGER, true, false,false);
 
 	//Build the info
 
