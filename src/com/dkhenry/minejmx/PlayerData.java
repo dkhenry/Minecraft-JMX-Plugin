@@ -18,7 +18,7 @@ import javax.management.openmbean.SimpleType;
 
 public class PlayerData implements DynamicMBean {
 	// stuff we're exporting
-	private long timeOnServer = 0;/**< In Progress */
+	private long timeOnServer = 0;/**< Done */
 	private int numberOfLogins = 0; /**< Done */
 	private int blocksPlaced = 0; /**< Done */
 	private int blocksDestroyed = 0; /**< Done */
