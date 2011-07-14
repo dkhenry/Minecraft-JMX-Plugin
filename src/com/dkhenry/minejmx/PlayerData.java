@@ -117,24 +117,16 @@ public class PlayerData implements DynamicMBean {
 		this.active = active;
 	}
 
-	public void setLoggedInTimestamp(long timestamp) {
-		this.loggedInTimestamp = timestamp;
-	}
-
-	public long getLoggedInTimestamp() {
-		return this.loggedInTimestamp;
-	}
-
 	public void logIn() {
 		this.incNumberOfLogins();
 		this.setActive(1);
-		this.setLoggedInTimestamp(System.currentTimeMillis());
+		this.loggedInTimestamp = System.currentTimeMillis();
 	}
 
 	public void logOut() {
 		this.setActive(0);
 		this.incTimeOnServerBy(System.currentTimeMillis() - this.loggedInTimestamp);
-		this.setLoggedInTimestamp(-1);
+		this.loggedInTimestamp = -1;
 	}
 
 	public int getActive() {
