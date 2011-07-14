@@ -23,7 +23,7 @@ public class ServerData implements DynamicMBean {
 	private Map<String,Integer> mobsKilled ;/** Done */
 	private int playersKilled ; /** Done */
 	private int playTime ;
-	private int numberOfPLayers ; /**< Done */
+	private int numberOfPlayers ; /**< Done */
 
 	public ServerData() {
 		mobsKilled = new HashMap<String,Integer>() ;
@@ -73,20 +73,20 @@ public class ServerData implements DynamicMBean {
 		this.playTime = playTime;
 	}
 
-	public int getNumberOfPLayers() {
-		return numberOfPLayers;
+	public int getNumberOfPlayers() {
+		return numberOfPlayers;
 	}
 
-	public void setNumberOfPLayers(int numberOfPLayers) {
-		this.numberOfPLayers = numberOfPLayers;
+	public void setNumberOfPlayers(int numberOfPlayers) {
+		this.numberOfPlayers = numberOfPlayers;
 	}
 
 	public void incNumberOfPlayers() {
-		this.numberOfPLayers++ ;
+		this.numberOfPlayers++ ;
 	}
 
 	public void decNumberofPlayers() {
-		this.numberOfPLayers-- ;
+		this.numberOfPlayers-- ;
 	}
 
 	public void setPlayersKilled(int playersKilled) {
@@ -203,7 +203,7 @@ public class ServerData implements DynamicMBean {
 	}
 
 	public void decNumberOfPlayers() {
-		this.numberOfPLayers-- ;
+		this.numberOfPlayers-- ;
 
 	}
 
