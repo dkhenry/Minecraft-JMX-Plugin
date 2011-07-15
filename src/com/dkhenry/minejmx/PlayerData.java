@@ -33,7 +33,7 @@ public class PlayerData implements DynamicMBean {
 		mobsKilled = new HashMap<String,Integer>() ;
 	}
 
-	public int getTimeOnServer() {
+	public long getTimeOnServer() {
 		return timeOnServer;
 	}
 
