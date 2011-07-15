@@ -25,7 +25,6 @@ public class MineJMXPlayerListener extends PlayerListener {
 			plugin.log.info("MineJMX Found a new first time Player") ;
 			playerData = new PlayerData() ;
 			plugin.addPlayer(player.getName(),playerData) ;
-			return ;
 		}
 		playerData.logIn();
 
@@ -43,10 +42,9 @@ public class MineJMXPlayerListener extends PlayerListener {
 		if(plugin.playerData.containsKey(player.getName())) {
 			playerData = plugin.playerData.get(player.getName()) ;
 		} else {
-			plugin.log.info("MineJMX Found an Unregisted Player in a place where an Unregisted Player should not be found") ;
+			plugin.log.info("MineJMX Found an Unregistered Player in a place where an Unregistered Player should not be found") ;
 			playerData = new PlayerData() ;
 			plugin.addPlayer(player.getName(),playerData) ;
-			return ;
 		}
 		playerLoggedIntime = playerData.logOut();
 
