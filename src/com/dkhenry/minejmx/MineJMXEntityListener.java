@@ -73,7 +73,7 @@ public class MineJMXEntityListener extends EntityListener {
 				}
 
 				// Increment The Server Stats
-				plugin.serverData.incPlayersKilled() ;
+				// plugin.serverData.incPlayersKilled() ;
 
 			}
 
