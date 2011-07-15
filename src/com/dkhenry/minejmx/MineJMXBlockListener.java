@@ -1,5 +1,7 @@
 package com.dkhenry.minejmx;
 
+import javax.management.ObjectName;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -28,7 +30,7 @@ public class MineJMXBlockListener extends BlockListener {
 				 blockData = plugin.blockData.get(mat) ;
 			} else {
 				blockData = new BlockData() ;
-				plugin.blockData.put(mat, blockData) ;
+				plugin.addBlock(mat,blockData) ;
 			}
 			blockData.incBlocksPlaced() ;
 
@@ -62,7 +64,7 @@ public class MineJMXBlockListener extends BlockListener {
 				 blockData = plugin.blockData.get(mat) ;
 			} else {
 				blockData = new BlockData() ;
-				plugin.blockData.put(mat, blockData) ;
+				plugin.addBlock(mat,blockData) ;
 			}
 			blockData.incBlocksDestroyed() ;
 
@@ -77,7 +79,6 @@ public class MineJMXBlockListener extends BlockListener {
 				plugin.log.info("MineJMX Found a Player Event For an unrecongnised Player ( This Shouldn't happen )") ;
 				playerData = new PlayerData() ;
 				plugin.addPlayer(player.getName(),playerData) ;
-				return ;
 			}
 			playerData.incBlocksDestroyed() ;
 

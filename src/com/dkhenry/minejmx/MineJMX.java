@@ -206,6 +206,36 @@ public class MineJMX extends JavaPlugin {
 		this.playerData.put(name, player) ;
 	}
 
+	public void addBlock(Material mat, BlockData blockData) {
+		String name = mat.name() ;
+		if( blockData == null ) {
+			blockData = new BlockData() ;
+		}
+		// Register the MBean
+		ObjectName oName ;
+		try {
+			oName = new ObjectName("org.dkhenry.minejmxjmx:type=BlockData,name="+name);
+			if( mbs.isRegistered(oName) ) {
+				mbs.unregisterMBean(oName) ;
+			}
+			mbs.registerMBean(blockData, oName) ;
+		} catch (InstanceAlreadyExistsException e) {
+			//e.printStackTrace();
+		} catch (MBeanRegistrationException e) {
+			//e.printStackTrace();
+		} catch (NotCompliantMBeanException e) {
+			//e.printStackTrace();
+		} catch (MalformedObjectNameException e) {
+			//e.printStackTrace();
+		} catch (NullPointerException e) {
+			//e.printStackTrace();
+		} catch (InstanceNotFoundException e) {
+			//e.printStackTrace();
+		}
+
+		this.blockData.put(mat, blockData) ;
+	}
+
 	@Override
 	public void onDisable() {
 		//stopping JMXConnectorServer
@@ -235,6 +265,9 @@ public class MineJMX extends JavaPlugin {
 		try {
 			String serverName = Bukkit.getServer().getName();
 			name = new ObjectName("org.dkhenry.minejmxjmx:type=ServerData,name="+serverName);
+			if (mbs.isRegistered(name) ) {
+				mbs.unregisterMBean(name) ;
+			}
 			mbs.registerMBean(serverData, name) ;
 		} catch (MalformedObjectNameException e1) {
 			//e1.printStackTrace();
@@ -246,6 +279,9 @@ public class MineJMX extends JavaPlugin {
 			//e.printStackTrace();
 		} catch (NotCompliantMBeanException e) {
 			//e.printStackTrace();
+		} catch (InstanceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		/* Register the Listeners */
@@ -264,5 +300,6 @@ public class MineJMX extends JavaPlugin {
 
 		log.info("The MineJMX Plugin has been enabled.") ;
 	}
+
 
 }
