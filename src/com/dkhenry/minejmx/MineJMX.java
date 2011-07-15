@@ -184,7 +184,7 @@ public class MineJMX extends JavaPlugin {
 		// Register the MBean
 		ObjectName oName ;
 		try {
-			oName = new ObjectName("org.dkhenry.minejmxjmx:type=PlayerData,name="+name);
+			oName = new ObjectName("org.dkhenry.minejmx:type=PlayerData,name="+name);
 			if( mbs.isRegistered(oName) ) {
 				mbs.unregisterMBean(oName) ;
 			}
@@ -214,7 +214,7 @@ public class MineJMX extends JavaPlugin {
 		// Register the MBean
 		ObjectName oName ;
 		try {
-			oName = new ObjectName("org.dkhenry.minejmxjmx:type=BlockData,name="+name);
+			oName = new ObjectName("org.dkhenry.minejmx:type=BlockData,name="+name);
 			if( mbs.isRegistered(oName) ) {
 				mbs.unregisterMBean(oName) ;
 			}
@@ -264,7 +264,7 @@ public class MineJMX extends JavaPlugin {
 		ObjectName name;
 		try {
 			String serverName = Bukkit.getServer().getName();
-			name = new ObjectName("org.dkhenry.minejmxjmx:type=ServerData,name="+serverName);
+			name = new ObjectName("org.dkhenry.minejmx:type=ServerData,name="+serverName);
 			if (mbs.isRegistered(name) ) {
 				mbs.unregisterMBean(name) ;
 			}
