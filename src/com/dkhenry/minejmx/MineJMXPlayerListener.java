@@ -36,6 +36,7 @@ public class MineJMXPlayerListener extends PlayerListener {
 	@Override
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer() ;
+		long playerLoggedInTime;
 
 		// Increment The Per Player Stats
 		PlayerData playerData = null ;
@@ -47,9 +48,10 @@ public class MineJMXPlayerListener extends PlayerListener {
 			plugin.addPlayer(player.getName(),playerData) ;
 			return ;
 		}
-		playerData.logOut();
+		playerLoggedIntime = playerData.logOut();
 
 		// ...and the server statistics
 		plugin.serverData.decNumberOfPlayers() ;
+		plugin.serverData.incPlayTimeBy(playerLoggedInTime);
 	}
 }

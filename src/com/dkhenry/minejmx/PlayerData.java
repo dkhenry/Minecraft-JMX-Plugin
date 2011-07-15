@@ -123,10 +123,12 @@ public class PlayerData implements DynamicMBean {
 		this.loggedInTimestamp = System.currentTimeMillis();
 	}
 
-	public void logOut() {
+	public long logOut() {
+		long playerLoggedInTime = System.currentTimeMillis() - this.loggedInTimestamp;
 		this.setActive(0);
-		this.incTimeOnServerBy(System.currentTimeMillis() - this.loggedInTimestamp);
+		this.incTimeOnServerBy(playerLoggedInTime);
 		this.loggedInTimestamp = -1;
+		return playerLoggedInTime;
 	}
 
 	public int getActive() {
