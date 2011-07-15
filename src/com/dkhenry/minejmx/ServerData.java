@@ -28,6 +28,10 @@ public class ServerData implements DynamicMBean {
 
 	public ServerData() {
 		mobsKilled = new HashMap<String,Integer>() ;
+		mobsKilled.put("creeper", new Integer(0)) ;
+		mobsKilled.put("spider", new Integer(0)) ;
+		mobsKilled.put("zombie", new Integer(0)) ;
+		mobsKilled.put("skeleton", new Integer(0)) ;
 	}
 
 	public int getBlocksPlaced() {

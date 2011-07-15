@@ -31,6 +31,10 @@ public class PlayerData implements DynamicMBean {
 
 	public PlayerData() {
 		mobsKilled = new HashMap<String,Integer>() ;
+		mobsKilled.put("creeper", new Integer(0)) ;
+		mobsKilled.put("spider", new Integer(0)) ;
+		mobsKilled.put("zombie", new Integer(0)) ;
+		mobsKilled.put("skeleton", new Integer(0)) ;
 	}
 
 	public long getTimeOnServer() {
@@ -188,10 +192,10 @@ public class PlayerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[11];
+	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[12];
 
 	//Build the Attributes
-		attributes[0] = new OpeNMBeanAttributeInfoSupport("timeOnServer", "Time spent on this server in milliseconds", SimpleType.LONG, true, false, false);
+		attributes[0] = new OpenMBeanAttributeInfoSupport("timeOnServer", "Time spent on this server in milliseconds", SimpleType.LONG, true, false, false);
 		attributes[1] = new OpenMBeanAttributeInfoSupport("numberOfLogins","Number of Logins to this Server",SimpleType.INTEGER, true, false,false);
 		attributes[2] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.INTEGER, true, false,false);
 		attributes[3] = new OpenMBeanAttributeInfoSupport("blocksDestroyed","Number of Blocks Destroyed",SimpleType.INTEGER, true, false,false);

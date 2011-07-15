@@ -31,8 +31,7 @@ public class MineJMXEntityListener extends EntityListener {
 			} else {
 				plugin.log.info("MineJMX Found a new first time Player") ;
 				playerData = new PlayerData() ;
-				plugin.addPlayer(player.getName(),playerData) ;
-				return ;
+				plugin.addPlayer(player.getName(),playerData) ;				
 			}
 			playerData.incDeaths() ;
 
@@ -45,7 +44,7 @@ public class MineJMXEntityListener extends EntityListener {
 		if( cause instanceof EntityDamageByEntityEvent ) {
 			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager() ;
 			if( predicate instanceof Player ) {
-				Player player = (Player) subject ;
+				Player player = (Player) predicate ;
 
 				// Increment The Per Player Stats
 				PlayerData playerData = null ;

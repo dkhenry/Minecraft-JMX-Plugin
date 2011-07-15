@@ -46,7 +46,7 @@ public class MineJMXPlayerListener extends PlayerListener {
 			playerData = new PlayerData() ;
 			plugin.addPlayer(player.getName(),playerData) ;
 		}
-		playerLoggedIntime = playerData.logOut();
+		playerLoggedInTime = playerData.logOut();
 
 		// ...and the server statistics
 		plugin.serverData.decNumberOfPlayers() ;

@@ -72,7 +72,7 @@ public class BlockData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[1];
+	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[2];
 
 	//Build the Attributes
 	     attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Total Blocks Placed",SimpleType.INTEGER, true, false,false);

@@ -175,7 +175,7 @@ public class MineJMX extends JavaPlugin {
 	/**
 	 * @brief This will add a new player and register him with the MBeanServer
 	 * @param name The name of the player
-	 * @param player The Playerdata Object or NULL to have one automatically created
+	 * @param player The PlayerData Object or NULL to have one automatically created
 	 */
 	public void addPlayer(String name , PlayerData player) {
 		if( player == null ) {
@@ -190,17 +190,17 @@ public class MineJMX extends JavaPlugin {
 			}
 			mbs.registerMBean(player, oName) ;
 		} catch (InstanceAlreadyExistsException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch (MBeanRegistrationException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch (NotCompliantMBeanException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch (MalformedObjectNameException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch (NullPointerException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch (InstanceNotFoundException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		this.playerData.put(name, player) ;
