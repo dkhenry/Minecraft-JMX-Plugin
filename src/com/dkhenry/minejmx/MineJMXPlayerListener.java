@@ -25,30 +25,31 @@ public class MineJMXPlayerListener extends PlayerListener {
 			plugin.log.info("MineJMX Found a new first time Player") ;
 			playerData = new PlayerData() ;
 			plugin.addPlayer(player.getName(),playerData) ;
-			return ;
 		}
-		playerData.incNumberOfLogins() ;
-		playerData.setActive(1) ;
-		plugin.serverData.incNumberOfPlayers() ;
+		playerData.logIn();
 
+		// ...and the server statistics
+		plugin.serverData.incNumberOfPlayers() ;
 	}
 
 	@Override
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer() ;
+		long playerLoggedInTime;
 
 		// Increment The Per Player Stats
 		PlayerData playerData = null ;
 		if(plugin.playerData.containsKey(player.getName())) {
 			playerData = plugin.playerData.get(player.getName()) ;
 		} else {
-			plugin.log.info("MineJMX Found an Unregisted Player in a place where an Unregisted Player should not be found") ;
+			plugin.log.info("MineJMX Found an Unregistered Player in a place where an Unregistered Player should not be found") ;
 			playerData = new PlayerData() ;
 			plugin.addPlayer(player.getName(),playerData) ;
-			return ;
 		}
-		playerData.setActive(0) ;
-		plugin.serverData.decNumberOfPlayers() ;
+		playerLoggedIntime = playerData.logOut();
 
+		// ...and the server statistics
+		plugin.serverData.decNumberOfPlayers() ;
+		plugin.serverData.incPlayTimeBy(playerLoggedInTime);
 	}
 }
