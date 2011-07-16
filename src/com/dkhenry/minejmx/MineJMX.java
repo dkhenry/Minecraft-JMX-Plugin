@@ -236,6 +236,32 @@ public class MineJMX extends JavaPlugin {
 		this.blockData.put(mat, blockData) ;
 	}
 
+	public BlockData getBlockData(Material mat, String logIfNotFound = "") {
+		BlockData blockData;
+		if(this.blockData.containsKey(mat)) {
+			return this.blockData.get(mat);
+		}
+		if(logIfNotFound.length > 0) {
+			this.log.info(logIfNotFound);
+		}
+		blockData = new BlockData();
+		this.addBlock(mat, blockData);
+		return blockData;
+	}
+
+	public PlayerData getPlayerData(String name, String logIfNotFound = "") {
+		PlayerData playerData;
+		if(this.playerData.containsKey(name)) {
+			return this.playerData.get(name);
+		}
+		if(logIfNotFound.length > 0) {
+			this.log.info(logIfNotFound);
+		}
+		playerData = new PlayerData();
+		this.addPlayer(name, playerData);
+		return playerData;
+	}
+
 	@Override
 	public void onDisable() {
 		//stopping JMXConnectorServer
