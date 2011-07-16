@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 
 public class MineJMXBlockListener extends BlockListener {
 	public static MineJMX plugin;
@@ -21,7 +23,7 @@ public class MineJMXBlockListener extends BlockListener {
 		Material mat = block.getType();
 
 		// Increment The Per Block Stats
-		BlockData blockData = plugin.getBlockData(mat);
+		BlockData blockData = plugin.getBlockData(mat,"");
 		blockData.incBlocksPlaced() ;
 
 		// Increment The Per Server Stats
@@ -39,7 +41,7 @@ public class MineJMXBlockListener extends BlockListener {
 		Material mat = block.getType();
 
 		// Increment The Per block Stats
-		BlockData blockData = plugin.getBlockData(mat);
+		BlockData blockData = plugin.getBlockData(mat,"");
 		blockData.incBlocksDestroyed() ;
 
 		// Increment The Per Server Stats
@@ -54,7 +56,7 @@ public class MineJMXBlockListener extends BlockListener {
 		Material mat = event.getSource().getType();
 
 		// Increment the per-block stats
-		BlockData blockData = plugin.getBlockData(mat);
+		BlockData blockData = plugin.getBlockData(mat,"");
 		blockData.incBlocksSpread();
 
 		// Increment the per-server stats
@@ -65,7 +67,7 @@ public class MineJMXBlockListener extends BlockListener {
 		Material mat = event.getBlock().getType();
 
 		// Increment the per-block stats
-		BlockData blockData = plugin.getBlockData(mat);
+		BlockData blockData = plugin.getBlockData(mat,"");
 		blockData.incBlocksSpread();
 
 		// Increment the per-server stats

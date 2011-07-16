@@ -236,12 +236,12 @@ public class MineJMX extends JavaPlugin {
 		this.blockData.put(mat, blockData) ;
 	}
 
-	public BlockData getBlockData(Material mat, String logIfNotFound = "") {
+	public BlockData getBlockData(Material mat, String logIfNotFound ) {
 		BlockData blockData;
 		if(this.blockData.containsKey(mat)) {
 			return this.blockData.get(mat);
 		}
-		if(logIfNotFound.length > 0) {
+		if(logIfNotFound.length() > 0) {
 			this.log.info(logIfNotFound);
 		}
 		blockData = new BlockData();
@@ -249,12 +249,12 @@ public class MineJMX extends JavaPlugin {
 		return blockData;
 	}
 
-	public PlayerData getPlayerData(String name, String logIfNotFound = "") {
+	public PlayerData getPlayerData(String name, String logIfNotFound ) {
 		PlayerData playerData;
 		if(this.playerData.containsKey(name)) {
 			return this.playerData.get(name);
 		}
-		if(logIfNotFound.length > 0) {
+		if(logIfNotFound.length() > 0) {
 			this.log.info(logIfNotFound);
 		}
 		playerData = new PlayerData();
@@ -305,9 +305,8 @@ public class MineJMX extends JavaPlugin {
 			//e.printStackTrace();
 		} catch (NotCompliantMBeanException e) {
 			//e.printStackTrace();
-		} catch (InstanceNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (InstanceNotFoundException e) {		
+			//e.printStackTrace();
 		}
 
 		/* Register the Listeners */
