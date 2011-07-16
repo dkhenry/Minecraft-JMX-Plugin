@@ -26,7 +26,7 @@ public class ServerData implements DynamicMBean {
 	private Map<String,Integer> mobsKilled ;/** Done */
 	private int playersKilled ; /** Done */
 	private long playTime ; /**< Done */
-	private int numberOfPlayers ; /**< Done */
+	private int numberOfPlayers ; /**< Done */	
 
 	public ServerData() {
 		mobsKilled = new HashMap<String,Integer>() ;
@@ -194,7 +194,9 @@ public class ServerData implements DynamicMBean {
 			return this.mobsKilled.get("zombie") ;
 		} else if(arg0.equals("spidersKilled")) {
 			return this.mobsKilled.get("spider") ;
-		}
+		} else if(arg0.equals("numberOfPlayers")) {
+			return this.getNumberOfPlayers() ;
+		} 
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute") ;
 	}
 
@@ -234,6 +236,7 @@ public class ServerData implements DynamicMBean {
 		attributes[10] = new OpenMBeanAttributeInfoSupport("skeletonsKilled","Number of Skeletons Killed",SimpleType.INTEGER, true, false,false);
 		attributes[11] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
 		attributes[12] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
+		attributes[13] = new OpenMBeanAttributeInfoSupport("numberOfPlayers","Number of Players On Server",SimpleType.INTEGER, true, false,false);
 		
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),
