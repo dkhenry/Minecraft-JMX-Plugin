@@ -15,68 +15,50 @@ public class MineJMXBlockListener extends BlockListener {
 	}
 
 	@Override
-	public void onBlockPlace(BlockPlaceEvent event){
-
+	public void onBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		Material mat = block.getType();
 
-		// Increment The Per block Stats
-		BlockData blockData = null ;
-		if(plugin.blockData.containsKey(mat)) {
-			 blockData = plugin.blockData.get(mat) ;
-		} else {
-			blockData = new BlockData() ;
-			plugin.addBlock(mat,blockData) ;
-		}
+		// Increment The Per Block Stats
+		BlockData blockData = plugin.getBlockData(mat);
 		blockData.incBlocksPlaced() ;
 
 		// Increment The Per Server Stats
 		plugin.serverData.incBlocksPlaced() ;
 
 		// Increment The Per Player Stats
-		PlayerData playerData = null ;
-		if(plugin.playerData.containsKey(player.getName())) {
-			playerData = plugin.playerData.get(player.getName()) ;
-		} else {
-			plugin.log.info("MineJMX Found a Player Event For an unrecongnised Player ( This Shouldn't happen )") ;
-			playerData = new PlayerData() ;
-			plugin.addPlayer(player.getName(),playerData) ;
-		}
+		PlayerData playerData = plugin.getPlayerData(player.getName(), "MineJMX found a Player event For an unrecognized Player (this shouldn't happen)");
 		playerData.incBlocksPlaced() ;
-
 	}
 
 	@Override
 	public void onBlockBreak(BlockBreakEvent event) {
-
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		Material mat = block.getType();
 
 		// Increment The Per block Stats
-		BlockData blockData = null ;
-		if(plugin.blockData.containsKey(mat)) {
-			 blockData = plugin.blockData.get(mat) ;
-		} else {
-			blockData = new BlockData() ;
-			plugin.addBlock(mat,blockData) ;
-		}
+		BlockData blockData = plugin.getBlockData(mat);
 		blockData.incBlocksDestroyed() ;
 
 		// Increment The Per Server Stats
 		plugin.serverData.incBlocksDestroyed() ;
 
 		// Increment The Per Player Stats
-		PlayerData playerData = null ;
-		if(plugin.playerData.containsKey(player.getName())) {
-			playerData = plugin.playerData.get(player.getName()) ;
-		} else {
-			plugin.log.info("MineJMX Found a Player Event For an unrecongnised Player ( This Shouldn't happen )") ;
-			playerData = new PlayerData() ;
-			plugin.addPlayer(player.getName(),playerData) ;
-		}
+		PlayerData playerData = plugin.getPlayerData(player.getName(), "MineJMX found a Player event for an unrecognized Player (tThis shouldn't happen)");
 		playerData.incBlocksDestroyed() ;
+	}
 
+	@Override
+	public void onBlockSpread(BlockSpreadEvent event) {
+		Material mat = event.getSource().getType();
+
+		// Increment the per-block stats
+		BlockData blockData = plugin.getBlockData(mat);
+		blockData.incBlocksSpread();
+
+		// Increment the per-server stats
+		plugin.serverData.incBlocksSpread();
 	}
 }
