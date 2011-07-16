@@ -13,9 +13,9 @@ import javax.management.openmbean.OpenMBeanInfoSupport;
 import javax.management.openmbean.SimpleType;
 
 public class BlockData implements DynamicMBean {
-
 	private long blocksPlaced =0 ; /**< Done */
 	private long blocksDestroyed = 0 ; /**< Done */
+	private long blocksSpread = 0; /**< Done */
 
 	public void setBlocksPlaced(long blocksPlaced) {
 		this.blocksPlaced = blocksPlaced;
@@ -27,7 +27,6 @@ public class BlockData implements DynamicMBean {
 
 	public void incBlocksPlaced() {
 		this.blocksPlaced++ ;
-
 	}
 
 	public void setBlocksDestroyed(long blocksDestroyed) {
@@ -41,6 +40,19 @@ public class BlockData implements DynamicMBean {
 	public void incBlocksDestroyed() {
 		this.blocksDestroyed++ ;
 	}
+
+	public void setBlocksSpread(long blocksSpread) {
+		this.blocksSpread = blocksSpread;
+	}
+
+	public long getBlocksSpread() {
+		return this.blocksSpread;
+	}
+
+	public void incBlocksSpread() {
+		this.blocksSpread++;
+	}
+
 	@Override
 	public Object getAttribute(String arg0) throws AttributeNotFoundException,
 			MBeanException, ReflectionException {
@@ -48,6 +60,8 @@ public class BlockData implements DynamicMBean {
 			return getBlocksPlaced() ;
 		} else if(arg0.equals("blocksDestroyed")) {
 			return getBlocksDestroyed();
+		} else if(arg0.equals("blocksSpread")) {
+			return this.getBlocksSpread();
 		}
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute") ;
 	}
@@ -72,14 +86,14 @@ public class BlockData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[2];
+	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[3];
 
-	//Build the Attributes
-	     attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Total Blocks Placed",SimpleType.INTEGER, true, false,false);
-	     attributes[1] = new OpenMBeanAttributeInfoSupport("blocksDestroyed","Number of Total Blocks Destroyed",SimpleType.INTEGER, true, false,false);
+		//Build the Attributes
+		attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Total Blocks Placed",SimpleType.INTEGER, true, false,false);
+		attributes[1] = new OpenMBeanAttributeInfoSupport("blocksDestroyed","Number of Total Blocks Destroyed",SimpleType.INTEGER, true, false,false);
+		attributes[2] = new OpenMBeanAttributeInfoSupport("blocksSpread", "Number of Total Blocks Spread", SimpleType.INTEGER, true, false, false);
 
-	//Build the info
-
+		//Build the info
 	    info = new OpenMBeanInfoSupport(this.getClass().getName(),
 	                "Quote - Open - MBean", attributes, null,
 	                null, null);
@@ -96,12 +110,11 @@ public class BlockData implements DynamicMBean {
 	public void setAttribute(Attribute arg0) throws AttributeNotFoundException,
 			InvalidAttributeValueException, MBeanException, ReflectionException {
 		throw new AttributeNotFoundException("No attributes can be set on this MBean");
-
 	}
 
 	@Override
 	public AttributeList setAttributes(AttributeList arg0) {
 		return new AttributeList() ;
 	}
-
 }
+
