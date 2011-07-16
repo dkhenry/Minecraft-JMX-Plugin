@@ -18,11 +18,11 @@ import javax.management.openmbean.SimpleType;
 
 public class ServerData implements DynamicMBean {
 	// stuff we're exporting to JMX
-	private int blocksPlaced ; /**< Done */
-	private int blocksDestroyed ; /**< Done */
-	private int blocksSpread; /**< Done */
-	private int blocksDecayed; /**< Done */
-	private int itemsCrafted ;
+	private long blocksPlaced ; /**< Done */
+	private long blocksDestroyed ; /**< Done */
+	private long blocksSpread; /**< Done */
+	private long blocksDecayed; /**< Done */
+	private long itemsCrafted ;
 	private Map<String,Integer> mobsKilled ;/** Done */
 	private int playersKilled ; /** Done */
 	private long playTime ; /**< Done */
@@ -37,11 +37,11 @@ public class ServerData implements DynamicMBean {
 	}
 
 	// blocksPlaced {{{
-	public int getBlocksPlaced() {
+	public long getBlocksPlaced() {
 		return blocksPlaced;
 	}
 
-	public void setBlocksPlaced(int blocksPlaced) {
+	public void setBlocksPlaced(long blocksPlaced) {
 		this.blocksPlaced = blocksPlaced;
 	}
 
@@ -51,11 +51,11 @@ public class ServerData implements DynamicMBean {
 	// }}}
 
 	// itemsCrafted {{{
-	public int getItemsCrafted() {
+	public long getItemsCrafted() {
 		return itemsCrafted;
 	}
 
-	public void setItemsCrafted(int itemsCrafted) {
+	public void setItemsCrafted(long itemsCrafted) {
 		this.itemsCrafted = itemsCrafted;
 	}
 
@@ -125,11 +125,11 @@ public class ServerData implements DynamicMBean {
 	// }}}
 
 	// blocksDestroyed {{{
-	public void setBlocksDestroyed(int blocksDestroyed) {
+	public void setBlocksDestroyed(long blocksDestroyed) {
 		this.blocksDestroyed = blocksDestroyed;
 	}
 
-	public int getBlocksDestroyed() {
+	public long getBlocksDestroyed() {
 		return blocksDestroyed;
 	}
 
@@ -139,11 +139,11 @@ public class ServerData implements DynamicMBean {
 	// }}}
 
 	// blocksSpread {{{
-	public void setBlocksSpread(int blocksSpread) {
+	public void setBlocksSpread(long blocksSpread) {
 		this.blocksSpread = blocksSpread;
 	}
 
-	public int getBlocksSpread() {
+	public long getBlocksSpread() {
 		return this.blocksSpread;
 	}
 
@@ -153,11 +153,11 @@ public class ServerData implements DynamicMBean {
 	// }}}
 
 	// blocksDecayed {{{
-	public void setBlocksDecayed(int blocksDecayed) {
+	public void setBlocksDecayed(long blocksDecayed) {
 		this.blocksDecayed = blocksDecayed;
 	}
 
-	public int getBlocksDecayed() {
+	public long getBlocksDecayed() {
 		return this.blocksDecayed;
 	}
 
@@ -221,11 +221,11 @@ public class ServerData implements DynamicMBean {
 	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[13];
 
 		//Build the Attributes
-		attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.INTEGER, true, false,false);
-		attributes[1] = new OpenMBeanAttributeInfoSupport("blocksDestroyed","Number of Blocks Destroyed",SimpleType.INTEGER, true, false,false);
-		attributes[2] = new OpenMBeanAttributeInfoSupport("blocksSpread", "Number of blocks naturally spread", SimpleType.INTEGER, true, false, false);
-		attributes[3] = new OpenMBeanAttributeInfoSupport("blocksDecayed", "Number of blocks naturally decayed", SimpleType.INTEGER, true, false, false);
-		attributes[4] = new OpenMBeanAttributeInfoSupport("itemsCrafted","Number of items Crafted",SimpleType.INTEGER, true, false,false);
+		attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.LONG, true, false,false);
+		attributes[1] = new OpenMBeanAttributeInfoSupport("blocksDestroyed","Number of Blocks Destroyed",SimpleType.LONG, true, false,false);
+		attributes[2] = new OpenMBeanAttributeInfoSupport("blocksSpread", "Number of blocks naturally spread", SimpleType.LONG, true, false, false);
+		attributes[3] = new OpenMBeanAttributeInfoSupport("blocksDecayed", "Number of blocks naturally decayed", SimpleType.LONG, true, false, false);
+		attributes[4] = new OpenMBeanAttributeInfoSupport("itemsCrafted","Number of items Crafted",SimpleType.LONG, true, false,false);
 		attributes[5] = new OpenMBeanAttributeInfoSupport("mobsKilled","Number Of Mobs Killed",SimpleType.INTEGER, true, false,false);
 		attributes[6] = new OpenMBeanAttributeInfoSupport("playersKilled","Number Of Players Killed",SimpleType.INTEGER, true, false,false);
 		attributes[7] = new OpenMBeanAttributeInfoSupport("playTime","Amount Of Time People have played on this Server",SimpleType.LONG, true, false,false);
