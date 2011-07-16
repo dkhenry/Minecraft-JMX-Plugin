@@ -50,8 +50,7 @@ public class MineJMXBlockListener extends BlockListener {
 		playerData.incBlocksDestroyed() ;
 	}
 
-	@Override
-	public void onBlockSpread(BlockSpreadEvent event) {
+	@Override public void onBlockSpread(BlockSpreadEvent event) {
 		Material mat = event.getSource().getType();
 
 		// Increment the per-block stats
@@ -61,4 +60,16 @@ public class MineJMXBlockListener extends BlockListener {
 		// Increment the per-server stats
 		plugin.serverData.incBlocksSpread();
 	}
+
+	@Override public void onLeavesDecay(LeavesDecayEvent event) {
+		Material mat = event.getBlock().getType();
+
+		// Increment the per-block stats
+		BlockData blockData = plugin.getBlockData(mat);
+		blockData.incBlocksSpread();
+
+		// Increment the per-server stats
+		plugin.serverData.incBlocksDecayed();
+	}
 }
+
