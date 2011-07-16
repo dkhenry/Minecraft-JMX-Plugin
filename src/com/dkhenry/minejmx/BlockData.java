@@ -15,7 +15,7 @@ import javax.management.openmbean.SimpleType;
 public class BlockData implements DynamicMBean {
 	private long blocksPlaced =0 ; /**< Done */
 	private long blocksDestroyed = 0 ; /**< Done */
-	private long blocksSpread = 0; /**< In progress */
+	private long blocksSpread = 0; /**< Done */
 
 	public void setBlocksPlaced(long blocksPlaced) {
 		this.blocksPlaced = blocksPlaced;
@@ -110,12 +110,11 @@ public class BlockData implements DynamicMBean {
 	public void setAttribute(Attribute arg0) throws AttributeNotFoundException,
 			InvalidAttributeValueException, MBeanException, ReflectionException {
 		throw new AttributeNotFoundException("No attributes can be set on this MBean");
-
 	}
 
 	@Override
 	public AttributeList setAttributes(AttributeList arg0) {
 		return new AttributeList() ;
 	}
-
 }
+

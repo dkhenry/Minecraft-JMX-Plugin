@@ -20,7 +20,7 @@ public class ServerData implements DynamicMBean {
 	// stuff we're exporting to JMX
 	private int blocksPlaced ; /**< Done */
 	private int blocksDestroyed ; /**< Done */
-	private int blocksSpread; /**< In progress */
+	private int blocksSpread; /**< Done */
 	private int itemsCrafted ;
 	private Map<String,Integer> mobsKilled ;/** Done */
 	private int playersKilled ; /** Done */
