@@ -16,7 +16,7 @@ public class BlockData implements DynamicMBean {
 	private long blocksPlaced =0 ; /**< Done */
 	private long blocksDestroyed = 0 ; /**< Done */
 	private long blocksSpread = 0; /**< Done */
-	private long blocksDecayed = 0; /**< In progress */
+	private long blocksDecayed = 0; /**< Done */
 
 	// blocksPlaced {{{
 	public void setBlocksPlaced(long blocksPlaced) {
