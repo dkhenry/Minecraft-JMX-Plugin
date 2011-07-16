@@ -315,14 +315,17 @@ public class MineJMX extends JavaPlugin {
 		// The Block Events
 		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Event.Priority.Normal ,this) ;
 		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Normal ,this) ;
+		pm.registerEvent(Event.Type.BLOCK_SPREAD, blockListener, Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, Event.Priority.Normal, this);
 
 		// Player Events
 		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal ,this) ;
 		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal ,this) ;
 
+		// Entity Events
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal ,this) ;
-		// Server Events
 
+		// Server Events
 
 		log.info("The MineJMX Plugin has been enabled.") ;
 	}
