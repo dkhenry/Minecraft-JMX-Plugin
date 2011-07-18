@@ -37,12 +37,9 @@ public class PlayerData implements DynamicMBean {
 		mobsKilled.put("skeleton", new Integer(0)) ;
 	}
 
+	// timeOnServer {{{
 	public long getTimeOnServer() {
 		return timeOnServer;
-	}
-
-	public long getFullTimeOnServer() {
-		return this.timeOnServer == -1 ? this.timeOnServer : (this.timeOnServer + this.timeSinceLogin());
 	}
 
 	public void setTimeOnServer(int timeOnServer) {
@@ -52,7 +49,9 @@ public class PlayerData implements DynamicMBean {
 	public void incTimeOnServerBy(long ms) {
 		this.timeOnServer += ms;
 	}
+	// }}}
 
+	// {{{ numberOfLogins
 	public int getNumberOfLogins() {
 		return numberOfLogins;
 	}
@@ -61,6 +60,12 @@ public class PlayerData implements DynamicMBean {
 		this.numberOfLogins = numberOfLogins;
 	}
 
+	public void incNumberOfLogins() {
+		this.numberOfLogins++ ;
+	}
+	// }}}
+
+	// blocksPlaced {{{
 	public int getBlocksPlaced() {
 		return blocksPlaced;
 	}
@@ -72,7 +77,9 @@ public class PlayerData implements DynamicMBean {
 	public void incBlocksPlaced() {
 		this.blocksPlaced++ ;
 	}
+	// }}}
 
+	// blocksDestroyed {{{
 	public int getBlocksDestroyed() {
 		return blocksDestroyed;
 	}
@@ -84,7 +91,9 @@ public class PlayerData implements DynamicMBean {
 	public void incBlocksDestroyed() {
 		this.blocksDestroyed++ ;
 	}
+	// }}}
 
+	// itemsCrafted {{{
 	public int getItemsCrafted() {
 		return itemsCrafted;
 	}
@@ -92,7 +101,9 @@ public class PlayerData implements DynamicMBean {
 	public void setItemsCrafted(int itemsCrafted) {
 		this.itemsCrafted = itemsCrafted;
 	}
+	// }}}
 
+	// mobsKilled {{{
 	public Map<String, Integer> getMobsKilled() {
 		return mobsKilled;
 	}
@@ -104,32 +115,41 @@ public class PlayerData implements DynamicMBean {
 	public void incMobsKilled(String type) {
 		this.mobsKilled.put(type, this.mobsKilled.get(type)+1)  ;
 	}
+	// }}}
+
+	// deaths {{{
+	public int getDeaths() {
+		return deaths;
+	}
 
 	public void setDeaths(int deaths) {
 		this.deaths = deaths;
 	}
 
-	public int getDeaths() {
-		return deaths;
-	}
-
 	public void incDeaths() {
 		this.deaths++ ;
 	}
+	// }}}
 
-	public void incNumberOfLogins() {
-		this.numberOfLogins++ ;
+	// active {{{
+	public int getActive() {
+		return active;
 	}
 
 	public void setActive(int active) {
 		this.active = active;
 	}
+	// }}}
 
 	public long timeSinceLogin() {
 		if(this.loggedInTimestamp == -1) {
 			return -1;
 		}
 		return System.currentTimeMillis() - this.loggedInTimestamp;
+	}
+
+	public long getFullTimeOnServer() {
+		return this.timeOnServer == -1 ? this.timeOnServer : (this.timeOnServer + this.timeSinceLogin());
 	}
 
 	public void logIn() {
@@ -144,10 +164,6 @@ public class PlayerData implements DynamicMBean {
 		this.incTimeOnServerBy(playerLoggedInTime);
 		this.loggedInTimestamp = -1;
 		return playerLoggedInTime;
-	}
-
-	public int getActive() {
-		return active;
 	}
 
 	@Override
