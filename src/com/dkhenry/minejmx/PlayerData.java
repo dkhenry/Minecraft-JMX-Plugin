@@ -41,6 +41,10 @@ public class PlayerData implements DynamicMBean {
 		return timeOnServer;
 	}
 
+	public long getFullTimeOnServer() {
+		return this.timeOnServer == -1 ? this.timeOnServer : (this.timeOnServer + this.timeSinceLogin());
+	}
+
 	public void setTimeOnServer(int timeOnServer) {
 		this.timeOnServer = timeOnServer;
 	}
@@ -121,6 +125,13 @@ public class PlayerData implements DynamicMBean {
 		this.active = active;
 	}
 
+	public long timeSinceLogin() {
+		if(this.loggedInTimestamp == -1) {
+			return -1;
+		}
+		return System.currentTimeMillis() - this.loggedInTimestamp;
+	}
+
 	public void logIn() {
 		this.incNumberOfLogins();
 		this.setActive(1);
@@ -128,7 +139,7 @@ public class PlayerData implements DynamicMBean {
 	}
 
 	public long logOut() {
-		long playerLoggedInTime = System.currentTimeMillis() - this.loggedInTimestamp;
+		long playerLoggedInTime = this.timeSinceLogin();
 		this.setActive(0);
 		this.incTimeOnServerBy(playerLoggedInTime);
 		this.loggedInTimestamp = -1;
@@ -144,7 +155,7 @@ public class PlayerData implements DynamicMBean {
 			MBeanException, ReflectionException {
 
 		if(arg0.equals("timeOnServer")) {
-			return getTimeOnServer();
+			return this.getFullTimeOnServer();
 		} else if(arg0.equals("numberOfLogins")) {
 			return getNumberOfLogins() ;
 		} else if(arg0.equals("blocksPlaced")) {
