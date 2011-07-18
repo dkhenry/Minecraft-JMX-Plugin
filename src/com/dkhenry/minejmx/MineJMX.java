@@ -282,10 +282,9 @@ public class MineJMX extends JavaPlugin {
 		/* Do the Magic to Enable JMX  */
 		enableJMX() ;
 
-
 		playerData = new HashMap<String,PlayerData>() ;
 		blockData = new HashMap<Material,BlockData>() ;
-		serverData = new ServerData() ;
+		serverData = new ServerData(this);
 
 		ObjectName name;
 		try {
