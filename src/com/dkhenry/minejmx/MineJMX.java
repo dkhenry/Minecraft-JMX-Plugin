@@ -66,6 +66,8 @@ public class MineJMX extends JavaPlugin {
 	private static File Config = new File(dir + File.separator + "MineJMX.properties") ;
 	private static Properties prop = new Properties() ;
 
+	private static File Persistance = new File(dir + File.separator + "MineJMX.yml") ;
+
 
 	/* Class to enable Password Based JMx Authentication */
 	private class JmxAuthenticatorImple implements JMXAuthenticator {
@@ -304,7 +306,7 @@ public class MineJMX extends JavaPlugin {
 			//e.printStackTrace();
 		} catch (NotCompliantMBeanException e) {
 			//e.printStackTrace();
-		} catch (InstanceNotFoundException e) {		
+		} catch (InstanceNotFoundException e) {
 			//e.printStackTrace();
 		}
 

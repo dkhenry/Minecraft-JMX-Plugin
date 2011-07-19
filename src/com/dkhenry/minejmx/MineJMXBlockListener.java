@@ -68,7 +68,7 @@ public class MineJMXBlockListener extends BlockListener {
 
 		// Increment the per-block stats
 		BlockData blockData = plugin.getBlockData(mat,"");
-		blockData.incBlocksSpread();
+		blockData.incBlocksDecayed();
 
 		// Increment the per-server stats
 		plugin.serverData.incBlocksDecayed();
