@@ -3,6 +3,7 @@ package com.dkhenry.minejmx;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -28,12 +29,16 @@ public class ServerData implements DynamicMBean {
 	private long playTime ; /**< Done */
 	private int numberOfPlayers ; /**< Done */	
 
-	public ServerData() {
-		mobsKilled = new HashMap<String,Integer>() ;
-		mobsKilled.put("creeper", new Integer(0)) ;
-		mobsKilled.put("spider", new Integer(0)) ;
-		mobsKilled.put("zombie", new Integer(0)) ;
-		mobsKilled.put("skeleton", new Integer(0)) ;
+	// need to access the plugin object from this one
+	private MineJMX plugin;
+
+	public ServerData(MineJMX plugin) {
+		this.plugin = plugin;
+		this.mobsKilled = new HashMap<String,Integer>() ;
+		this.mobsKilled.put("creeper", new Integer(0)) ;
+		this.mobsKilled.put("spider", new Integer(0)) ;
+		this.mobsKilled.put("zombie", new Integer(0)) ;
+		this.mobsKilled.put("skeleton", new Integer(0)) ;
 	}
 
 	// blocksPlaced {{{
@@ -111,12 +116,12 @@ public class ServerData implements DynamicMBean {
 	// }}}
 
 	// playersKilled {{{
-	public void setPlayersKilled(int playersKilled) {
-		this.playersKilled = playersKilled;
-	}
-
 	public int getPlayersKilled() {
 		return playersKilled;
+	}
+
+	public void setPlayersKilled(int playersKilled) {
+		this.playersKilled = playersKilled;
 	}
 
 	public void incPlayersKilled() {
@@ -125,12 +130,12 @@ public class ServerData implements DynamicMBean {
 	// }}}
 
 	// blocksDestroyed {{{
-	public void setBlocksDestroyed(long blocksDestroyed) {
-		this.blocksDestroyed = blocksDestroyed;
-	}
-
 	public long getBlocksDestroyed() {
 		return blocksDestroyed;
+	}
+
+	public void setBlocksDestroyed(long blocksDestroyed) {
+		this.blocksDestroyed = blocksDestroyed;
 	}
 
 	public void incBlocksDestroyed() {
@@ -139,12 +144,12 @@ public class ServerData implements DynamicMBean {
 	// }}}
 
 	// blocksSpread {{{
-	public void setBlocksSpread(long blocksSpread) {
-		this.blocksSpread = blocksSpread;
-	}
-
 	public long getBlocksSpread() {
 		return this.blocksSpread;
+	}
+
+	public void setBlocksSpread(long blocksSpread) {
+		this.blocksSpread = blocksSpread;
 	}
 
 	public void incBlocksSpread() {
@@ -153,18 +158,31 @@ public class ServerData implements DynamicMBean {
 	// }}}
 
 	// blocksDecayed {{{
-	public void setBlocksDecayed(long blocksDecayed) {
-		this.blocksDecayed = blocksDecayed;
-	}
-
 	public long getBlocksDecayed() {
 		return this.blocksDecayed;
+	}
+
+	public void setBlocksDecayed(long blocksDecayed) {
+		this.blocksDecayed = blocksDecayed;
 	}
 
 	public void incBlocksDecayed() {
 		this.blocksDecayed++;
 	}
 	// }}}
+
+	public long getFullPlayTime() {
+		long activePlayTime = 0;
+
+		for(Iterator i = this.plugin.playerData.entrySet().iterator; i.next(); i.hasNext()) {
+			PlayerData player = (PlayerData)((Map.Entry)i.next().getValue());
+			if(player.active) {
+				activePlayTime += player.timeSinceLogin();
+			}
+		}
+
+		return activePlayTime + this.playTime;
+	}
 
 	@Override
 	public Object getAttribute(String arg0) throws AttributeNotFoundException,
@@ -183,7 +201,7 @@ public class ServerData implements DynamicMBean {
 		} else if(arg0.equals("playersKilled")) {
 			return getPlayersKilled() ;
 		} else if(arg0.equals("playTime")) {
-			return getPlayTime() ;
+			return this.getFullPlayTime();
 		} else if(arg0.equals("mobsKilled")) {
 			return this.mobsKilled.get("creeper") +this.mobsKilled.get("skeleton") + this.mobsKilled.get("zombie") +this.mobsKilled.get("spider") ;
 		} else if(arg0.equals("creepersKilled")) {
