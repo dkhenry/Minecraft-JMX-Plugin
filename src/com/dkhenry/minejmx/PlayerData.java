@@ -149,7 +149,7 @@ public class PlayerData implements DynamicMBean {
 	}
 
 	public long getFullTimeOnServer() {
-		return this.active ? this.timeOnServer : (this.timeOnServer + this.timeSinceLogin());
+		return (1 == this.active) ? this.timeOnServer : (this.timeOnServer + this.timeSinceLogin());
 	}
 
 	public void logIn() {
