@@ -27,7 +27,7 @@ public class ServerData implements DynamicMBean {
 	private Map<String,Integer> mobsKilled ;/** Done */
 	private int playersKilled ; /** Done */
 	private long playTime ; /**< Done */
-	private int numberOfPlayers ; /**< Done */	
+	private int numberOfPlayers ; /**< Done */
 
 	// need to access the plugin object from this one
 	private MineJMX plugin;
@@ -214,7 +214,7 @@ public class ServerData implements DynamicMBean {
 			return this.mobsKilled.get("spider") ;
 		} else if(arg0.equals("numberOfPlayers")) {
 			return this.getNumberOfPlayers() ;
-		} 
+		}
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute") ;
 	}
 
@@ -238,7 +238,7 @@ public class ServerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[13];
+	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[14];
 
 		//Build the Attributes
 		attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.LONG, true, false,false);
@@ -255,7 +255,7 @@ public class ServerData implements DynamicMBean {
 		attributes[11] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
 		attributes[12] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
 		attributes[13] = new OpenMBeanAttributeInfoSupport("numberOfPlayers","Number of Players On Server",SimpleType.INTEGER, true, false,false);
-		
+
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),
 					"Quote - Open - MBean", attributes, null,
