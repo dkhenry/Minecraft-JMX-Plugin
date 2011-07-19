@@ -177,7 +177,7 @@ public class ServerData implements DynamicMBean {
 		for(Iterator i = this.plugin.playerData.entrySet().iterator(); i.hasNext(); ) {
 			PlayerData player = (PlayerData)((Map.Entry)i.next()).getValue() ;
 			if(1 == player.getActive()) {
-				activePlayTime += player.timeSinceLogin();
+				activePlayTime += player.timeSinceLogin() ;
 			}
 		}
 
