@@ -39,14 +39,7 @@ public class MineJMXPlayerListener extends PlayerListener {
 		long playerLoggedInTime;
 
 		// Increment The Per Player Stats
-		PlayerData playerData = null ;
-		if(plugin.playerData.containsKey(player.getName())) {
-			playerData = plugin.playerData.get(player.getName()) ;
-		} else {
-			plugin.log.info("MineJMX Found an Unregistered Player in a place where an Unregistered Player should not be found") ;
-			playerData = new PlayerData() ;
-			plugin.addPlayer(player.getName(),playerData) ;
-		}
+		PlayerData playerData = plugin.getPlayerData(player.getName(), "MineJMX found an unregistered Player in a place where an unregistered Player should not be found");
 		playerLoggedInTime = playerData.logOut();
 
 		// ...and the server statistics
