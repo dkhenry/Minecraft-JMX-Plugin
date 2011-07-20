@@ -28,6 +28,7 @@ public class ServerData implements DynamicMBean {
 	private int playersKilled ; /** Done */
 	private long playTime ; /**< Done */
 	private int numberOfPlayers ; /**< Done */
+	private double playerDistanceMoved = 0.0; /**< In Progress */
 
 	// need to access the plugin object from this one
 	private MineJMX plugin;
@@ -171,6 +172,20 @@ public class ServerData implements DynamicMBean {
 	}
 	// }}}
 
+	// playerDistanceMoved {{{
+	public double getPlayerDistanceMoved() {
+		return this.playerDistanceMoved;
+	}
+
+	public void setPlayerDistanceMoved(double playerDistanceMoved) {
+		this.playerDistanceMoved = playerDistanceMoved;
+	}
+
+	public void incPlayerDistanceMovedBy(double playerDistanceMoved) {
+		this.playerDistanceMoved += playerDistanceMoved;
+	}
+	// }}}
+
 	public long getFullPlayTime() {
 		long activePlayTime = 0;
 
@@ -214,6 +229,8 @@ public class ServerData implements DynamicMBean {
 			return this.mobsKilled.get("spider") ;
 		} else if(arg0.equals("numberOfPlayers")) {
 			return this.getNumberOfPlayers() ;
+		} else if(arg0.equals("playerDistanceMoved")) {
+			return this.getPlayerDistanceMoved();
 		}
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute") ;
 	}
@@ -238,7 +255,7 @@ public class ServerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[14];
+		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[15];
 
 		//Build the Attributes
 		attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.LONG, true, false,false);
@@ -255,6 +272,7 @@ public class ServerData implements DynamicMBean {
 		attributes[11] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
 		attributes[12] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
 		attributes[13] = new OpenMBeanAttributeInfoSupport("numberOfPlayers","Number of Players On Server",SimpleType.INTEGER, true, false,false);
+		attributes[14] = new OpenMBeanAttributeInfoSupport("playerDistanceMoved", "Total player distance traveled", SimpleType.DOUBLE, true, false, false);
 
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),

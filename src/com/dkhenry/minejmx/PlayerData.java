@@ -25,6 +25,7 @@ public class PlayerData implements DynamicMBean {
 	private Map<String,Integer> mobsKilled ; /** Done */
 	private int deaths = 0 ; /**< Done */
 	private int active = 0 ; /**< Done */
+	private double distanceMoved = 0.0; /**< In progress */
 
 	// internal use
 	private long loggedInTimestamp = -1; // timestamp of when the player logged in; -1 if they're not logged in
@@ -141,6 +142,20 @@ public class PlayerData implements DynamicMBean {
 	}
 	// }}}
 
+	// distancedMoved {{{
+	public double getDistanceMoved() {
+		return this.distanceMoved;
+	}
+
+	public void setDistanceMoved(double distanceMoved) {
+		this.distanceMoved = distanceMoved;
+	}
+
+	public void incDistanceMovedBy(double distanceMoved) {
+		this.distanceMoved += distanceMoved;
+	}
+	// }}}
+
 	public long timeSinceLogin() {
 		if(this.loggedInTimestamp == -1) {
 			return -1;
@@ -194,6 +209,8 @@ public class PlayerData implements DynamicMBean {
 			return getDeaths() ;
 		} else if(arg0.equals("active")) {
 			return getActive() ;
+		} else if(arg0.equals("distanceMoved")) {
+			return this.getDistanceMoved();
 		}
 
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute") ;
@@ -219,9 +236,9 @@ public class PlayerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[12];
+		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[13];
 
-	//Build the Attributes
+		//Build the Attributes
 		attributes[0] = new OpenMBeanAttributeInfoSupport("timeOnServer", "Time spent on this server in milliseconds", SimpleType.LONG, true, false, false);
 		attributes[1] = new OpenMBeanAttributeInfoSupport("numberOfLogins","Number of Logins to this Server",SimpleType.INTEGER, true, false,false);
 		attributes[2] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.INTEGER, true, false,false);
@@ -234,12 +251,12 @@ public class PlayerData implements DynamicMBean {
 		attributes[9] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
 		attributes[10] = new OpenMBeanAttributeInfoSupport("deaths","Number of deaths on this server",SimpleType.INTEGER, true, false,false);
 		attributes[11] = new OpenMBeanAttributeInfoSupport("active","If this player is active",SimpleType.INTEGER, true, false,false);
+		attributes[12] = new OpenMBeanAttributeInfoSupport("distanceMoved", "How far this player has moved", SimpleType.DOUBLE, true, false, false);
 
-	//Build the info
-
-	    info = new OpenMBeanInfoSupport(this.getClass().getName(),
-	                "Quote - Open - MBean", attributes, null,
-	                null, null);
+		//Build the info
+		info = new OpenMBeanInfoSupport(this.getClass().getName(),
+					"Quote - Open - MBean", attributes, null,
+					null, null);
 		return info;
 	}
 
