@@ -126,6 +126,14 @@ public class MineJMX extends JavaPlugin {
 		}
 
 	}
+	
+	private void loadState() { 
+		
+	}
+	
+	private void saveState() { 
+		
+	}
 	/**
 	 * @brief Since we don't want to make everyone modify their start script
 	 * To Enable JMX we will do it programaticly
@@ -266,6 +274,7 @@ public class MineJMX extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		saveState() ; 
 		//stopping JMXConnectorServer
 		try {
 			cs.stop();
@@ -284,6 +293,7 @@ public class MineJMX extends JavaPlugin {
 		/* Do the Magic to Enable JMX  */
 		enableJMX() ;
 
+		loadState() ; 
 		playerData = new HashMap<String,PlayerData>() ;
 		blockData = new HashMap<Material,BlockData>() ;
 		serverData = new ServerData(this);
