@@ -57,7 +57,7 @@ public class MineJMXPlayerListener extends PlayerListener {
 	@Override public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Location from = event.getFrom(), to = event.getTo();
-		double distance = Math.sqrt(Math.pow(to.getX() - from.getX(), 2) + Math.pow(to.getY() - from.getY(), 2) + Math.pow(to.getZ() - from.getZ(), 2));
+		double distance = Math.abs(Math.sqrt(Math.pow(to.getX() - from.getX(), 2) + Math.pow(to.getY() - from.getY(), 2) + Math.pow(to.getZ() - from.getZ(), 2)));
 
 		// Increment the per-Player stats
 		PlayerData playerData = plugin.getPlayerData(player.getName(), "MineJMX found an unregsitered Player in a place where an unregistered Player should not be found");
