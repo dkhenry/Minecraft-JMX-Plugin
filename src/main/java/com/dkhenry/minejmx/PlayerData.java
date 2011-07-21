@@ -1,7 +1,10 @@
 package com.dkhenry.minejmx;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -30,7 +33,11 @@ public class PlayerData implements DynamicMBean {
 	// internal use
 	private long loggedInTimestamp = -1; // timestamp of when the player logged in; -1 if they're not logged in
 
-	public PlayerData() {
+	// need to access the plugin object from this one
+	private MineJMX plugin;
+
+	public PlayerData(MineJMX instance) {
+		instance = plugin ;
 		mobsKilled = new HashMap<String,Integer>() ;
 		mobsKilled.put("creeper", new Integer(0)) ;
 		mobsKilled.put("spider", new Integer(0)) ;
@@ -276,5 +283,49 @@ public class PlayerData implements DynamicMBean {
 	@Override
 	public AttributeList setAttributes(AttributeList arg0) {
 		return new AttributeList() ;
+	}
+
+	public String getMetricData() {
+		String rvalue = "" ;
+		for(Entry<String, Integer> entity : this.mobsKilled.entrySet()) {
+			rvalue += ","+entity.getKey()+":"+entity.getValue() ;
+		}
+		return "timeOnServer:"+this.timeOnServer+
+				",numberOfLogins:"+this.numberOfLogins+
+				",blocksPlaced:"+this.blocksPlaced+
+				",blocksDestroyed:"+this.blocksDestroyed+
+				",itemsCrafted:"+this.itemsCrafted+
+				",deaths:"+this.deaths+
+				",active:"+this.active+rvalue ;
+	}
+
+	public static PlayerData instanceFromResultSet(ResultSet rs, MineJMX plugin) throws SQLException {
+		PlayerData pd = new PlayerData(plugin) ; ;
+		String data = rs.getString("data") ;
+		if(data.length() <=0 ) {
+			return pd ;
+		}
+		String[] datas = data.split(",") ;
+		for(String s : datas) {
+			String[] keyval = s.split(":") ;
+			if( keyval[0].equals("timeOnServer") ) {
+				pd.setTimeOnServer(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("numberOfLogins") ) {
+				pd.setNumberOfLogins(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksPlaced") ) {
+				pd.setBlocksPlaced(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksDestroyed") ) {
+				pd.setBlocksDestroyed(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("itemsCrafted") ) {
+				pd.setItemsCrafted(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("deaths") ) {
+				pd.setDeaths(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("active") ) {
+				// Don't Set Player Active
+			} else {
+				pd.getMobsKilled().put(keyval[0], Integer.decode(keyval[1])) ;
+			}
+		}
+		return pd ;
 	}
 }

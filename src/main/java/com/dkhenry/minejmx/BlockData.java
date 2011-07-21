@@ -1,5 +1,8 @@
 package com.dkhenry.minejmx;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
@@ -18,6 +21,11 @@ public class BlockData implements DynamicMBean {
 	private long blocksSpread = 0; /**< Done */
 	private long blocksDecayed = 0; /**< Done */
 
+	private MineJMX plugin;
+
+	public BlockData(MineJMX instance) {
+		plugin = instance ;
+	}
 	// blocksPlaced {{{
 	public void setBlocksPlaced(long blocksPlaced) {
 		this.blocksPlaced = blocksPlaced;
@@ -139,6 +147,35 @@ public class BlockData implements DynamicMBean {
 	@Override
 	public AttributeList setAttributes(AttributeList arg0) {
 		return new AttributeList() ;
+	}
+
+	public String getMetricData() {
+		return "blocksPlaced:"+this.blocksPlaced+
+			   ",blocksDestroyed:"+this.blocksDestroyed+
+			   ",blocksSpread:"+this.blocksSpread+
+			   ",blocksDecayed:"+this.blocksDecayed  ;
+	}
+
+	public static BlockData instanceFromResultSet(ResultSet rs, MineJMX plugin) throws SQLException {
+		BlockData bd = new BlockData(plugin) ; ;
+		String data = rs.getString("data") ;
+		if(data.length() <=0 ) {
+			return bd ;
+		}
+		String[] datas = data.split(",") ;
+		for(String s : datas) {
+			String[] keyval = s.split(":") ;
+			if( keyval[0].equals("blocksPlaced") ) {
+				bd.setBlocksPlaced(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksDestroyed") ) {
+				bd.setBlocksDestroyed(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksSpread") ) {
+				bd.setBlocksSpread(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksDecayed") ) {
+				bd.setBlocksDecayed(Integer.decode(keyval[1])) ;
+			}
+		}
+		return bd ;
 	}
 }
 
