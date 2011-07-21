@@ -146,10 +146,13 @@ public class MineJMX extends JavaPlugin {
 				if(rs.getString("type").equals("server")) {
 					this.serverData = ServerData.instanceFromResultSet(rs, this) ;
 				} else if(rs.getString("type").equals("player")) {
-					this.playerData.put(rs.getString("key"), PlayerData.instanceFromResultSet(rs, this)) ;
+					PlayerData pd = PlayerData.instanceFromResultSet(rs, this) ; 
+					this.addPlayer(rs.getString("key"), pd) ; 					
+					this.playerData.put(rs.getString("key"), pd) ;
 				}else if(rs.getString("type").equals("block")) {
-					this.blockData.put(rs.getString("key"), BlockData.instanceFromResultSet(rs, this)) ;
-
+					BlockData bd = BlockData.instanceFromResultSet(rs, this) ; 
+					this.addBlock(rs.getString("key"), bd) ; 
+					this.blockData.put(rs.getString("key"), bd) ;
 				}				
 			}
 			rs.close();
