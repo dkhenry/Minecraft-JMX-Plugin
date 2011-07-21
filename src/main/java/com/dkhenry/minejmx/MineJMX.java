@@ -158,9 +158,9 @@ public class MineJMX extends JavaPlugin {
 			rs.close();
 			conn.close();
 		} catch (ClassNotFoundException e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 		} catch (SQLException e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 		}
 	}
 
@@ -187,9 +187,9 @@ public class MineJMX extends JavaPlugin {
 			rs.close();
 			conn.close();
 		} catch (ClassNotFoundException e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 		} catch (SQLException e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 		}
 	}
 	/**
