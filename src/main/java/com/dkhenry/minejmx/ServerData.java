@@ -1,6 +1,7 @@
 
 package com.dkhenry.minejmx;
 
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -280,5 +281,15 @@ public class ServerData implements DynamicMBean {
 	public AttributeList setAttributes(AttributeList arg0) {
 		return new AttributeList() ;
 	}
+
+	public String getMetricData() {
+		return "" ;
+	}
+
+	public static ServerData instanceFromResultSet(ResultSet rs, MineJMX plugin) {
+		return new ServerData(plugin) ;
+	}
+
+
 }
 

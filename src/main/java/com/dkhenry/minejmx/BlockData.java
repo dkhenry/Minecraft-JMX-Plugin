@@ -1,5 +1,7 @@
 package com.dkhenry.minejmx;
 
+import java.sql.ResultSet;
+
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
@@ -18,6 +20,11 @@ public class BlockData implements DynamicMBean {
 	private long blocksSpread = 0; /**< Done */
 	private long blocksDecayed = 0; /**< Done */
 
+	private MineJMX plugin;
+
+	public BlockData(MineJMX instance) {
+		plugin = instance ;
+	}
 	// blocksPlaced {{{
 	public void setBlocksPlaced(long blocksPlaced) {
 		this.blocksPlaced = blocksPlaced;
@@ -139,6 +146,14 @@ public class BlockData implements DynamicMBean {
 	@Override
 	public AttributeList setAttributes(AttributeList arg0) {
 		return new AttributeList() ;
+	}
+
+	public String getMetricData() {
+		return "" ;
+	}
+
+	public static BlockData instanceFromResultSet(ResultSet rs, MineJMX plugin) {
+		return new BlockData(plugin) ;
 	}
 }
 

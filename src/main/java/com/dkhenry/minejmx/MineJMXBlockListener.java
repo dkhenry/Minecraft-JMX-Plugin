@@ -23,7 +23,7 @@ public class MineJMXBlockListener extends BlockListener {
 		Material mat = block.getType();
 
 		// Increment The Per Block Stats
-		BlockData blockData = plugin.getBlockData(mat,"");
+		BlockData blockData = plugin.getBlockData(mat.name(),"");
 		blockData.incBlocksPlaced() ;
 
 		// Increment The Per Server Stats
@@ -41,7 +41,7 @@ public class MineJMXBlockListener extends BlockListener {
 		Material mat = block.getType();
 
 		// Increment The Per block Stats
-		BlockData blockData = plugin.getBlockData(mat,"");
+		BlockData blockData = plugin.getBlockData(mat.name(),"");
 		blockData.incBlocksDestroyed() ;
 
 		// Increment The Per Server Stats
@@ -56,7 +56,7 @@ public class MineJMXBlockListener extends BlockListener {
 		Material mat = event.getSource().getType();
 
 		// Increment the per-block stats
-		BlockData blockData = plugin.getBlockData(mat,"");
+		BlockData blockData = plugin.getBlockData(mat.name(),"");
 		blockData.incBlocksSpread();
 
 		// Increment the per-server stats
@@ -67,7 +67,7 @@ public class MineJMXBlockListener extends BlockListener {
 		Material mat = event.getBlock().getType();
 
 		// Increment the per-block stats
-		BlockData blockData = plugin.getBlockData(mat,"");
+		BlockData blockData = plugin.getBlockData(mat.name(),"");
 		blockData.incBlocksDecayed();
 
 		// Increment the per-server stats

@@ -1,5 +1,6 @@
 package com.dkhenry.minejmx;
 
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,11 @@ public class PlayerData implements DynamicMBean {
 	// internal use
 	private long loggedInTimestamp = -1; // timestamp of when the player logged in; -1 if they're not logged in
 
-	public PlayerData() {
+	// need to access the plugin object from this one
+	private MineJMX plugin;
+
+	public PlayerData(MineJMX instance) {
+		instance = plugin ;
 		mobsKilled = new HashMap<String,Integer>() ;
 		mobsKilled.put("creeper", new Integer(0)) ;
 		mobsKilled.put("spider", new Integer(0)) ;
@@ -259,5 +264,13 @@ public class PlayerData implements DynamicMBean {
 	@Override
 	public AttributeList setAttributes(AttributeList arg0) {
 		return new AttributeList() ;
+	}
+
+	public String getMetricData() {
+		return "" ;
+	}
+
+	public static PlayerData instanceFromResultSet(ResultSet rs, MineJMX plugin) {
+		return new PlayerData(plugin) ;
 	}
 }

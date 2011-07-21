@@ -13,6 +13,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -37,6 +38,8 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.* ;
+
 public class MineJMX extends JavaPlugin {
 
 	Logger log = Logger.getLogger("Minecraft") ;
@@ -55,7 +58,7 @@ public class MineJMX extends JavaPlugin {
 	/* The MBeans and their containers */
 	public ServerData serverData ;
 	public Map<String,PlayerData> playerData ;
-	public Map<Material,BlockData> blockData ;
+	public Map<String,BlockData> blockData ;
 
 	/* The Configure variables */
 	private String username = "admin" ;
@@ -66,7 +69,7 @@ public class MineJMX extends JavaPlugin {
 	private static File Config = new File(dir + File.separator + "MineJMX.properties") ;
 	private static Properties prop = new Properties() ;
 
-	private static File Persistance = new File(dir + File.separator + "MineJMX.yml") ;
+	private static String Persistance = dir + File.separator + "MineJMX.db" ;
 
 
 	/* Class to enable Password Based JMx Authentication */
@@ -126,13 +129,59 @@ public class MineJMX extends JavaPlugin {
 		}
 
 	}
-	
-	private void loadState() { 
-		
+
+	private void prepTables(Statement stat) throws SQLException {
+		stat.execute("CREATE TABLE IF NOT EXIST metrics ( key , type , data );") ;
 	}
-	
-	private void saveState() { 
-		
+
+	private void loadState() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:"+MineJMX.Persistance );
+			Statement stat = conn.createStatement();
+			prepTables(stat) ;
+			ResultSet rs = stat.executeQuery("SELECT key , type , data FROM metrics ;") ;
+
+			while (rs.next()) {
+				if(rs.getString("type").equals("server")) {
+					this.serverData = ServerData.instanceFromResultSet(rs, this) ;
+				} else if(rs.getString("type").equals("player")) {
+					this.playerData.put(rs.getString("key"), PlayerData.instanceFromResultSet(rs, this)) ;
+				}else if(rs.getString("type").equals("block")) {
+					this.blockData.put(rs.getString("key"), BlockData.instanceFromResultSet(rs, this)) ;
+
+				}
+				System.out.println("name = " + rs.getString("name"));
+				System.out.println("job = " + rs.getString("occupation"));
+			}
+			rs.close();
+			conn.close();
+		} catch (ClassNotFoundException e) {
+			// e.printStackTrace();
+		} catch (SQLException e) {
+			// e.printStackTrace();
+		}
+	}
+
+	private void saveState() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:"+MineJMX.Persistance );
+			Statement stat = conn.createStatement();
+			prepTables(stat) ;
+			ResultSet rs = stat.executeQuery("SELECT key , type , data FROM metrics ;") ;
+			for(Entry<String, BlockData> entry : this.blockData.entrySet()) {
+				BlockData d = entry.getValue() ;
+				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'block' , '"+d.getMetricData()+"';") ;
+			}
+
+			rs.close();
+			conn.close();
+		} catch (ClassNotFoundException e) {
+			// e.printStackTrace();
+		} catch (SQLException e) {
+			// e.printStackTrace();
+		}
 	}
 	/**
 	 * @brief Since we don't want to make everyone modify their start script
@@ -189,7 +238,7 @@ public class MineJMX extends JavaPlugin {
 	 */
 	public void addPlayer(String name , PlayerData player) {
 		if( player == null ) {
-			player = new PlayerData() ;
+			player = new PlayerData(this) ;
 		}
 		// Register the MBean
 		ObjectName oName ;
@@ -216,10 +265,10 @@ public class MineJMX extends JavaPlugin {
 		this.playerData.put(name, player) ;
 	}
 
-	public void addBlock(Material mat, BlockData blockData) {
-		String name = mat.name() ;
+	public void addBlock(String mat, BlockData blockData) {
+		String name = mat ;
 		if( blockData == null ) {
-			blockData = new BlockData() ;
+			blockData = new BlockData(this) ;
 		}
 		// Register the MBean
 		ObjectName oName ;
@@ -246,7 +295,7 @@ public class MineJMX extends JavaPlugin {
 		this.blockData.put(mat, blockData) ;
 	}
 
-	public BlockData getBlockData(Material mat, String logIfNotFound ) {
+	public BlockData getBlockData(String mat, String logIfNotFound ) {
 		BlockData blockData;
 		if(this.blockData.containsKey(mat)) {
 			return this.blockData.get(mat);
@@ -254,7 +303,7 @@ public class MineJMX extends JavaPlugin {
 		if(logIfNotFound.length() > 0) {
 			this.log.info(logIfNotFound);
 		}
-		blockData = new BlockData();
+		blockData = new BlockData(this);
 		this.addBlock(mat, blockData);
 		return blockData;
 	}
@@ -267,14 +316,14 @@ public class MineJMX extends JavaPlugin {
 		if(logIfNotFound.length() > 0) {
 			this.log.info(logIfNotFound);
 		}
-		playerData = new PlayerData();
+		playerData = new PlayerData(this);
 		this.addPlayer(name, playerData);
 		return playerData;
 	}
 
 	@Override
 	public void onDisable() {
-		saveState() ; 
+		saveState() ;
 		//stopping JMXConnectorServer
 		try {
 			cs.stop();
@@ -293,10 +342,10 @@ public class MineJMX extends JavaPlugin {
 		/* Do the Magic to Enable JMX  */
 		enableJMX() ;
 
-		loadState() ; 
-		
+		loadState() ;
+
 		playerData = new HashMap<String,PlayerData>() ;
-		blockData = new HashMap<Material,BlockData>() ;
+		blockData = new HashMap<String,BlockData>() ;
 		serverData = new ServerData(this);
 
 		ObjectName name;
