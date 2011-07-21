@@ -33,7 +33,6 @@ import javax.management.remote.JMXServiceURL;
 import javax.security.auth.Subject;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -143,6 +142,7 @@ public class MineJMX extends JavaPlugin {
 			ResultSet rs = stat.executeQuery("SELECT key , type , data FROM metrics ;") ;
 
 			while (rs.next()) {
+				log.info("Restoring : " + rs.getString("key") + ":" + rs.getString("type") + ":" + rs.getString("data")) ;
 				if(rs.getString("type").equals("server")) {
 					this.serverData = ServerData.instanceFromResultSet(rs, this) ;
 				} else if(rs.getString("type").equals("player")) {
@@ -150,9 +150,7 @@ public class MineJMX extends JavaPlugin {
 				}else if(rs.getString("type").equals("block")) {
 					this.blockData.put(rs.getString("key"), BlockData.instanceFromResultSet(rs, this)) ;
 
-				}
-				System.out.println("name = " + rs.getString("name"));
-				System.out.println("job = " + rs.getString("occupation"));
+				}				
 			}
 			rs.close();
 			conn.close();
@@ -172,8 +170,16 @@ public class MineJMX extends JavaPlugin {
 			ResultSet rs = stat.executeQuery("SELECT key , type , data FROM metrics ;") ;
 			for(Entry<String, BlockData> entry : this.blockData.entrySet()) {
 				BlockData d = entry.getValue() ;
+				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ; 
 				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'block' , '"+d.getMetricData()+"';") ;
 			}
+			for(Entry<String, PlayerData> entry : this.playerData.entrySet()) {
+				PlayerData d = entry.getValue() ;
+				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ;
+				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'player' , '"+d.getMetricData()+"';") ;
+			}
+			log.info("Saving: this : "+this.serverData.getMetricData()) ;
+			stat.executeUpdate("INSERT INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"';") ;    
 
 			rs.close();
 			conn.close();
