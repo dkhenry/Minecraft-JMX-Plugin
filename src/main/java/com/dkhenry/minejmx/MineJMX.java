@@ -130,7 +130,7 @@ public class MineJMX extends JavaPlugin {
 	}
 
 	private void prepTables(Statement stat) throws SQLException {
-		stat.execute("CREATE TABLE IF NOT EXIST metrics ( key , type , data );") ;
+		stat.execute("CREATE TABLE IF NOT EXISTS metrics ( key , type , data );") ;
 	}
 
 	private void loadState() {
@@ -174,15 +174,15 @@ public class MineJMX extends JavaPlugin {
 			for(Entry<String, BlockData> entry : this.blockData.entrySet()) {
 				BlockData d = entry.getValue() ;
 				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ; 
-				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'block' , '"+d.getMetricData()+"';") ;
+				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'block' , '"+d.getMetricData()+"');") ;
 			}
 			for(Entry<String, PlayerData> entry : this.playerData.entrySet()) {
 				PlayerData d = entry.getValue() ;
 				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ;
-				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'player' , '"+d.getMetricData()+"';") ;
+				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'player' , '"+d.getMetricData()+"');") ;
 			}
 			log.info("Saving: this : "+this.serverData.getMetricData()) ;
-			stat.executeUpdate("INSERT INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"';") ;    
+			stat.executeUpdate("INSERT INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"');") ;    
 
 			rs.close();
 			conn.close();
