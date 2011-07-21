@@ -130,7 +130,7 @@ public class MineJMX extends JavaPlugin {
 	}
 
 	private void prepTables(Statement stat) throws SQLException {
-		stat.execute("CREATE TABLE IF NOT EXISTS metrics ( key , type , data );") ;
+		stat.execute("CREATE TABLE IF NOT EXISTS metrics ( key , type , data , PRIMARY KEY(key,type) );") ;
 	}
 
 	private void loadState() {
@@ -146,14 +146,14 @@ public class MineJMX extends JavaPlugin {
 				if(rs.getString("type").equals("server")) {
 					this.serverData = ServerData.instanceFromResultSet(rs, this) ;
 				} else if(rs.getString("type").equals("player")) {
-					PlayerData pd = PlayerData.instanceFromResultSet(rs, this) ; 
-					this.addPlayer(rs.getString("key"), pd) ; 					
+					PlayerData pd = PlayerData.instanceFromResultSet(rs, this) ;
+					this.addPlayer(rs.getString("key"), pd) ;
 					this.playerData.put(rs.getString("key"), pd) ;
 				}else if(rs.getString("type").equals("block")) {
-					BlockData bd = BlockData.instanceFromResultSet(rs, this) ; 
-					this.addBlock(rs.getString("key"), bd) ; 
+					BlockData bd = BlockData.instanceFromResultSet(rs, this) ;
+					this.addBlock(rs.getString("key"), bd) ;
 					this.blockData.put(rs.getString("key"), bd) ;
-				}				
+				}
 			}
 			rs.close();
 			conn.close();
@@ -173,16 +173,16 @@ public class MineJMX extends JavaPlugin {
 			ResultSet rs = stat.executeQuery("SELECT key , type , data FROM metrics ;") ;
 			for(Entry<String, BlockData> entry : this.blockData.entrySet()) {
 				BlockData d = entry.getValue() ;
-				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ; 
-				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'block' , '"+d.getMetricData()+"');") ;
+				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ;
+				stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('"+entry.getKey()+"', 'block' , '"+d.getMetricData()+"') ;") ;
 			}
 			for(Entry<String, PlayerData> entry : this.playerData.entrySet()) {
 				PlayerData d = entry.getValue() ;
 				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ;
-				stat.executeUpdate("INSERT INTO metrics VALUES ('"+entry.getKey()+"', 'player' , '"+d.getMetricData()+"');") ;
+				stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('"+entry.getKey()+"', 'player' , '"+d.getMetricData()+"') ;") ;
 			}
-			log.info("Saving: this : "+this.serverData.getMetricData()) ;
-			stat.executeUpdate("INSERT INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"');") ;    
+			log.info("Saving: this : server : "+this.serverData.getMetricData()) ;
+			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"') ;") ;
 
 			rs.close();
 			conn.close();
@@ -301,7 +301,7 @@ public class MineJMX extends JavaPlugin {
 			//e.printStackTrace();
 		}
 
-		this.blockData.put(mat, blockData) ;
+		this.blockData.put(name, blockData) ;
 	}
 
 	public BlockData getBlockData(String mat, String logIfNotFound ) {
@@ -351,11 +351,11 @@ public class MineJMX extends JavaPlugin {
 		/* Do the Magic to Enable JMX  */
 		enableJMX() ;
 
-		loadState() ;
-
 		playerData = new HashMap<String,PlayerData>() ;
 		blockData = new HashMap<String,BlockData>() ;
 		serverData = new ServerData(this);
+
+		loadState() ;
 
 		ObjectName name;
 		try {

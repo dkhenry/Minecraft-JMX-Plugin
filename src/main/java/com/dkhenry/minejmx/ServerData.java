@@ -2,9 +2,11 @@
 package com.dkhenry.minejmx;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -283,13 +285,51 @@ public class ServerData implements DynamicMBean {
 	}
 
 	public String getMetricData() {
-		return "" ;
+		String rvalue = "" ;
+		for(Entry<String, Integer> entity : this.mobsKilled.entrySet()) {
+			rvalue += ","+entity.getKey()+":"+entity.getValue() ;
+		}
+		return "playTime:"+this.playTime+
+				",numberOfPlayers:"+this.numberOfPlayers+
+				",blocksPlaced:"+this.blocksPlaced+
+				",blocksDestroyed:"+this.blocksDestroyed+
+				",blocksSpread:"+this.blocksSpread+
+				",blocksDecayed:"+this.blocksDecayed+
+				",itemsCrafted:"+this.itemsCrafted+
+				",playersKilled:"+this.playersKilled ;
 	}
 
-	public static ServerData instanceFromResultSet(ResultSet rs, MineJMX plugin) {
-		return new ServerData(plugin) ;
+	public static ServerData instanceFromResultSet(ResultSet rs, MineJMX plugin) throws SQLException {
+		ServerData sd = new ServerData(plugin) ; ;
+		String data = rs.getString("data") ;
+		if(data.length() <=0 ) {
+			return sd ;
+		}
+		String[] datas = data.split(",") ;
+		for(String s : datas) {
+			String[] keyval = s.split(":") ;
+			if( keyval[0].equals("playTime") ) {
+				sd.setPlayTime(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("numberOfPlayers") ) {
+				sd.setNumberOfPlayers(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksPlaced") ) {
+				sd.setBlocksPlaced(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksDestroyed") ) {
+				sd.setBlocksDestroyed(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksSpread") ) {
+				sd.setBlocksSpread(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksDecayed") ) {
+				sd.setBlocksDecayed(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("itemsCrafted") ) {
+				sd.setItemsCrafted(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("playersKilled") ) {
+				sd.setPlayersKilled(Integer.decode(keyval[1])) ;
+			} else {
+				sd.getMobsKilled().put(keyval[0], Integer.decode(keyval[1])) ;
+			}
+		}
+		return sd ;
 	}
-
 
 }
 
