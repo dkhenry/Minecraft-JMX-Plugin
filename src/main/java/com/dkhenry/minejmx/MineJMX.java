@@ -13,6 +13,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -32,10 +33,11 @@ import javax.management.remote.JMXServiceURL;
 import javax.security.auth.Subject;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.* ;
 
 public class MineJMX extends JavaPlugin {
 
@@ -55,7 +57,7 @@ public class MineJMX extends JavaPlugin {
 	/* The MBeans and their containers */
 	public ServerData serverData ;
 	public Map<String,PlayerData> playerData ;
-	public Map<Material,BlockData> blockData ;
+	public Map<String,BlockData> blockData ;
 
 	/* The Configure variables */
 	private String username = "admin" ;
@@ -65,6 +67,8 @@ public class MineJMX extends JavaPlugin {
 	private static String dir = "plugins" ;
 	private static File Config = new File(dir + File.separator + "MineJMX.properties") ;
 	private static Properties prop = new Properties() ;
+
+	private static String Persistance = dir + File.separator + "MineJMX.db" ;
 
 
 	/* Class to enable Password Based JMx Authentication */
@@ -124,6 +128,70 @@ public class MineJMX extends JavaPlugin {
 		}
 
 	}
+
+	private void prepTables(Statement stat) throws SQLException {
+		stat.execute("CREATE TABLE IF NOT EXISTS metrics ( key , type , data , PRIMARY KEY(key,type) );") ;
+	}
+
+	private void loadState() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:"+MineJMX.Persistance );
+			Statement stat = conn.createStatement();
+			prepTables(stat) ;
+			ResultSet rs = stat.executeQuery("SELECT key , type , data FROM metrics ;") ;
+
+			while (rs.next()) {
+				log.info("Restoring : " + rs.getString("key") + ":" + rs.getString("type") + ":" + rs.getString("data")) ;
+				if(rs.getString("type").equals("server")) {
+					this.serverData = ServerData.instanceFromResultSet(rs, this) ;
+				} else if(rs.getString("type").equals("player")) {
+					PlayerData pd = PlayerData.instanceFromResultSet(rs, this) ;
+					this.addPlayer(rs.getString("key"), pd) ;
+					this.playerData.put(rs.getString("key"), pd) ;
+				}else if(rs.getString("type").equals("block")) {
+					BlockData bd = BlockData.instanceFromResultSet(rs, this) ;
+					this.addBlock(rs.getString("key"), bd) ;
+					this.blockData.put(rs.getString("key"), bd) ;
+				}
+			}
+			rs.close();
+			conn.close();
+		} catch (ClassNotFoundException e) {
+			 e.printStackTrace();
+		} catch (SQLException e) {
+			 e.printStackTrace();
+		}
+	}
+
+	private void saveState() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:"+MineJMX.Persistance );
+			Statement stat = conn.createStatement();
+			prepTables(stat) ;
+			ResultSet rs = stat.executeQuery("SELECT key , type , data FROM metrics ;") ;
+			for(Entry<String, BlockData> entry : this.blockData.entrySet()) {
+				BlockData d = entry.getValue() ;
+				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ;
+				stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('"+entry.getKey()+"', 'block' , '"+d.getMetricData()+"') ;") ;
+			}
+			for(Entry<String, PlayerData> entry : this.playerData.entrySet()) {
+				PlayerData d = entry.getValue() ;
+				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ;
+				stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('"+entry.getKey()+"', 'player' , '"+d.getMetricData()+"') ;") ;
+			}
+			log.info("Saving: this : server : "+this.serverData.getMetricData()) ;
+			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"') ;") ;
+
+			rs.close();
+			conn.close();
+		} catch (ClassNotFoundException e) {
+			 e.printStackTrace();
+		} catch (SQLException e) {
+			 e.printStackTrace();
+		}
+	}
 	/**
 	 * @brief Since we don't want to make everyone modify their start script
 	 * To Enable JMX we will do it programaticly
@@ -179,7 +247,7 @@ public class MineJMX extends JavaPlugin {
 	 */
 	public void addPlayer(String name , PlayerData player) {
 		if( player == null ) {
-			player = new PlayerData() ;
+			player = new PlayerData(this) ;
 		}
 		// Register the MBean
 		ObjectName oName ;
@@ -206,10 +274,10 @@ public class MineJMX extends JavaPlugin {
 		this.playerData.put(name, player) ;
 	}
 
-	public void addBlock(Material mat, BlockData blockData) {
-		String name = mat.name() ;
+	public void addBlock(String mat, BlockData blockData) {
+		String name = mat ;
 		if( blockData == null ) {
-			blockData = new BlockData() ;
+			blockData = new BlockData(this) ;
 		}
 		// Register the MBean
 		ObjectName oName ;
@@ -233,10 +301,10 @@ public class MineJMX extends JavaPlugin {
 			//e.printStackTrace();
 		}
 
-		this.blockData.put(mat, blockData) ;
+		this.blockData.put(name, blockData) ;
 	}
 
-	public BlockData getBlockData(Material mat, String logIfNotFound ) {
+	public BlockData getBlockData(String mat, String logIfNotFound ) {
 		BlockData blockData;
 		if(this.blockData.containsKey(mat)) {
 			return this.blockData.get(mat);
@@ -244,7 +312,7 @@ public class MineJMX extends JavaPlugin {
 		if(logIfNotFound.length() > 0) {
 			this.log.info(logIfNotFound);
 		}
-		blockData = new BlockData();
+		blockData = new BlockData(this);
 		this.addBlock(mat, blockData);
 		return blockData;
 	}
@@ -257,13 +325,14 @@ public class MineJMX extends JavaPlugin {
 		if(logIfNotFound.length() > 0) {
 			this.log.info(logIfNotFound);
 		}
-		playerData = new PlayerData();
+		playerData = new PlayerData(this);
 		this.addPlayer(name, playerData);
 		return playerData;
 	}
 
 	@Override
 	public void onDisable() {
+		saveState() ;
 		//stopping JMXConnectorServer
 		try {
 			cs.stop();
@@ -283,8 +352,10 @@ public class MineJMX extends JavaPlugin {
 		enableJMX() ;
 
 		playerData = new HashMap<String,PlayerData>() ;
-		blockData = new HashMap<Material,BlockData>() ;
+		blockData = new HashMap<String,BlockData>() ;
 		serverData = new ServerData(this);
+
+		loadState() ;
 
 		ObjectName name;
 		try {
@@ -304,7 +375,7 @@ public class MineJMX extends JavaPlugin {
 			//e.printStackTrace();
 		} catch (NotCompliantMBeanException e) {
 			//e.printStackTrace();
-		} catch (InstanceNotFoundException e) {		
+		} catch (InstanceNotFoundException e) {
 			//e.printStackTrace();
 		}
 

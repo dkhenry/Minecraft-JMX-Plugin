@@ -30,8 +30,8 @@ public class MineJMXEntityListener extends EntityListener {
 				playerData = plugin.playerData.get(player.getName()) ;
 			} else {
 				plugin.log.info("MineJMX Found a new first time Player") ;
-				playerData = new PlayerData() ;
-				plugin.addPlayer(player.getName(),playerData) ;				
+				playerData = new PlayerData(plugin) ;
+				plugin.addPlayer(player.getName(),playerData) ;
 			}
 			playerData.incDeaths() ;
 
@@ -52,7 +52,7 @@ public class MineJMXEntityListener extends EntityListener {
 					playerData = plugin.playerData.get(player.getName()) ;
 				} else {
 					plugin.log.info("MineJMX Found a new first time Player") ;
-					playerData = new PlayerData() ;
+					playerData = new PlayerData(plugin) ;
 					plugin.addPlayer(player.getName(),playerData) ;
 					return ;
 				}

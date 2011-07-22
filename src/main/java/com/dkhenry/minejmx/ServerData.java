@@ -1,9 +1,12 @@
 
 package com.dkhenry.minejmx;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -27,7 +30,8 @@ public class ServerData implements DynamicMBean {
 	private Map<String,Integer> mobsKilled ;/** Done */
 	private int playersKilled ; /** Done */
 	private long playTime ; /**< Done */
-	private int numberOfPlayers ; /**< Done */	
+	private int numberOfPlayers ; /**< Done */
+	private double playerDistanceMoved = 0.0; /**< In Progress */
 
 	// need to access the plugin object from this one
 	private MineJMX plugin;
@@ -171,6 +175,20 @@ public class ServerData implements DynamicMBean {
 	}
 	// }}}
 
+	// playerDistanceMoved {{{
+	public double getPlayerDistanceMoved() {
+		return this.playerDistanceMoved;
+	}
+
+	public void setPlayerDistanceMoved(double playerDistanceMoved) {
+		this.playerDistanceMoved = playerDistanceMoved;
+	}
+
+	public void incPlayerDistanceMovedBy(double playerDistanceMoved) {
+		this.playerDistanceMoved += playerDistanceMoved;
+	}
+	// }}}
+
 	public long getFullPlayTime() {
 		long activePlayTime = 0;
 
@@ -214,7 +232,9 @@ public class ServerData implements DynamicMBean {
 			return this.mobsKilled.get("spider") ;
 		} else if(arg0.equals("numberOfPlayers")) {
 			return this.getNumberOfPlayers() ;
-		} 
+		} else if(arg0.equals("playerDistanceMoved")) {
+			return this.getPlayerDistanceMoved();
+		}
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute") ;
 	}
 
@@ -238,7 +258,7 @@ public class ServerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-	    OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[13];
+		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[15];
 
 		//Build the Attributes
 		attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.LONG, true, false,false);
@@ -255,7 +275,8 @@ public class ServerData implements DynamicMBean {
 		attributes[11] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
 		attributes[12] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
 		attributes[13] = new OpenMBeanAttributeInfoSupport("numberOfPlayers","Number of Players On Server",SimpleType.INTEGER, true, false,false);
-		
+		attributes[14] = new OpenMBeanAttributeInfoSupport("playerDistanceMoved", "Total player distance traveled", SimpleType.DOUBLE, true, false, false);
+
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),
 					"Quote - Open - MBean", attributes, null,
@@ -280,5 +301,53 @@ public class ServerData implements DynamicMBean {
 	public AttributeList setAttributes(AttributeList arg0) {
 		return new AttributeList() ;
 	}
+
+	public String getMetricData() {
+		String rvalue = "" ;
+		for(Entry<String, Integer> entity : this.mobsKilled.entrySet()) {
+			rvalue += ","+entity.getKey()+":"+entity.getValue() ;
+		}
+		return "playTime:"+this.playTime+
+				",numberOfPlayers:"+this.numberOfPlayers+
+				",blocksPlaced:"+this.blocksPlaced+
+				",blocksDestroyed:"+this.blocksDestroyed+
+				",blocksSpread:"+this.blocksSpread+
+				",blocksDecayed:"+this.blocksDecayed+
+				",itemsCrafted:"+this.itemsCrafted+
+				",playersKilled:"+this.playersKilled ;
+	}
+
+	public static ServerData instanceFromResultSet(ResultSet rs, MineJMX plugin) throws SQLException {
+		ServerData sd = new ServerData(plugin) ; ;
+		String data = rs.getString("data") ;
+		if(data.length() <=0 ) {
+			return sd ;
+		}
+		String[] datas = data.split(",") ;
+		for(String s : datas) {
+			String[] keyval = s.split(":") ;
+			if( keyval[0].equals("playTime") ) {
+				sd.setPlayTime(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("numberOfPlayers") ) {
+				sd.setNumberOfPlayers(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksPlaced") ) {
+				sd.setBlocksPlaced(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksDestroyed") ) {
+				sd.setBlocksDestroyed(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksSpread") ) {
+				sd.setBlocksSpread(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("blocksDecayed") ) {
+				sd.setBlocksDecayed(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("itemsCrafted") ) {
+				sd.setItemsCrafted(Integer.decode(keyval[1])) ;
+			} else if( keyval[0].equals("playersKilled") ) {
+				sd.setPlayersKilled(Integer.decode(keyval[1])) ;
+			} else {
+				sd.getMobsKilled().put(keyval[0], Integer.decode(keyval[1])) ;
+			}
+		}
+		return sd ;
+	}
+
 }
 
