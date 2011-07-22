@@ -6,20 +6,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.Zombie;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 
 public class MineJMXEntityListener extends EntityListener {
-
 	private static MineJMX plugin ;
 
 	public MineJMXEntityListener(MineJMX instance) {
 		plugin = instance ;
 	}
-	@Override
-	public void onEntityDeath(EntityDeathEvent event) {
+
+	@Override public void onEntityDeath(EntityDeathEvent event) {
 		Entity subject = event.getEntity() ;
 		// If a player Died we Increment His deaths and carry on
 		if( subject instanceof Player ) {
@@ -37,9 +37,10 @@ public class MineJMXEntityListener extends EntityListener {
 
 			// Increment The Server Stats
 			plugin.serverData.incPlayersKilled() ;
+			return;
 		}
 
-		// So This wasen't a Player Dieing but a mob Dieing. Lets find who doneit and reward them for their accomplishments
+		// So This wasn't a Player Dieing but a mob Dieing. Lets find who doneit and reward them for their accomplishments
 		EntityDamageEvent cause = subject.getLastDamageCause() ;
 		if( cause instanceof EntityDamageByEntityEvent ) {
 			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager() ;
@@ -71,13 +72,19 @@ public class MineJMXEntityListener extends EntityListener {
 					playerData.incMobsKilled("spider") ;
 					plugin.serverData.incMobsKilled("spider") ;
 				}
-
-				// Increment The Server Stats
-				// plugin.serverData.incPlayersKilled() ;
-
 			}
-
+		} else if(cause instanceof EntityDamageByBlockEvent) {
+			// it was killed environmentally; let's increment the appropriate counter for this mob type
+			if(subject instanceof Creeper) {
+				plugin.serverData.incMobsKilledEnviron("creeper");
+			} else if(subject instanceof Skeleton) {
+				plugin.serverData.incMobsKilledEnviron("skeleton");
+			} else if(subject instanceof Zombie) {
+				plugin.serverData.incMobsKilledEnviron("zombie");
+			} else if(subject instanceof Spider) {
+				plugin.serverData.incMobsKilledEnviron("spider");
+			}
 		}
 	}
-
 }
+

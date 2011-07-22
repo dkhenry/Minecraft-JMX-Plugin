@@ -28,6 +28,7 @@ public class ServerData implements DynamicMBean {
 	private long blocksDecayed; /**< Done */
 	private long itemsCrafted ;
 	private Map<String,Integer> mobsKilled ;/** Done */
+	private Map<String,Integer> mobsKilledEnviron; /**< In Progress */
 	private int playersKilled ; /** Done */
 	private long playTime ; /**< Done */
 	private int numberOfPlayers ; /**< Done */
@@ -84,6 +85,20 @@ public class ServerData implements DynamicMBean {
 
 	public void incMobsKilled(String type) {
 		this.mobsKilled.put(type, this.mobsKilled.get(type)+1)  ;
+	}
+	// }}}
+
+	// mobsKilledEnviron {{{
+	public Map<String,Integer> getMobsKilledEnviron() {
+		return this.mobsKilledEnviron;
+	}
+
+	public void setMobsKilledEnviron(Map<String,Integer> mobsKilledEnviron) {
+		this.mobsKilledEnviron = mobsKilledEnviron;
+	}
+
+	public void incMobsKilledEnviron(String type) {
+		this.mobsKilledEnviron.put(type, this.mobsKilledEnviron.get(type) + 1);
 	}
 	// }}}
 
@@ -230,6 +245,20 @@ public class ServerData implements DynamicMBean {
 			return this.mobsKilled.get("zombie") ;
 		} else if(arg0.equals("spidersKilled")) {
 			return this.mobsKilled.get("spider") ;
+		} else if(arg0.equals("mobsKilledEnviron")) {
+			return
+				this.mobsKilledEnviron.get("creeper") +
+				this.mobsKilledEnviron.get("skeleton") +
+				this.mobsKilledEnviron.get("zombie") +
+				this.mobsKilledEnviron.get("spider");
+		} else if(arg0.equals("creepersKilledEnviron")) {
+			return this.mobsKilledEnviron.get("creeper");
+		} else if(arg0.equals("skeletonsKilledEnviron")) {
+			return this.mobsKilledEnviron.get("skeleton");
+		} else if(arg0.equals("zombiesKilledEnviron")) {
+			return this.mobsKilledEnviron.get("zombie");
+		} else if(arg0.equals("spidersKilledEnviron")) {
+			return this.mobsKilledEnviron.get("spider");
 		} else if(arg0.equals("numberOfPlayers")) {
 			return this.getNumberOfPlayers() ;
 		} else if(arg0.equals("playerDistanceMoved")) {
@@ -258,7 +287,7 @@ public class ServerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[15];
+		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[19];
 
 		//Build the Attributes
 		attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.LONG, true, false,false);
@@ -266,16 +295,20 @@ public class ServerData implements DynamicMBean {
 		attributes[2] = new OpenMBeanAttributeInfoSupport("blocksSpread", "Number of blocks naturally spread", SimpleType.LONG, true, false, false);
 		attributes[3] = new OpenMBeanAttributeInfoSupport("blocksDecayed", "Number of blocks naturally decayed", SimpleType.LONG, true, false, false);
 		attributes[4] = new OpenMBeanAttributeInfoSupport("itemsCrafted","Number of items Crafted",SimpleType.LONG, true, false,false);
-		attributes[5] = new OpenMBeanAttributeInfoSupport("mobsKilled","Number Of Mobs Killed",SimpleType.INTEGER, true, false,false);
-		attributes[6] = new OpenMBeanAttributeInfoSupport("playersKilled","Number Of Players Killed",SimpleType.INTEGER, true, false,false);
-		attributes[7] = new OpenMBeanAttributeInfoSupport("playTime","Amount Of Time People have played on this Server",SimpleType.LONG, true, false,false);
-		attributes[8] = new OpenMBeanAttributeInfoSupport("mobsKilled","Number Of Mobs Killed",SimpleType.INTEGER, true, false,false);
-		attributes[9] = new OpenMBeanAttributeInfoSupport("creepersKilled","Number of Creepers Killed",SimpleType.INTEGER, true, false,false);
-		attributes[10] = new OpenMBeanAttributeInfoSupport("skeletonsKilled","Number of Skeletons Killed",SimpleType.INTEGER, true, false,false);
-		attributes[11] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
-		attributes[12] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
-		attributes[13] = new OpenMBeanAttributeInfoSupport("numberOfPlayers","Number of Players On Server",SimpleType.INTEGER, true, false,false);
-		attributes[14] = new OpenMBeanAttributeInfoSupport("playerDistanceMoved", "Total player distance traveled", SimpleType.DOUBLE, true, false, false);
+		attributes[5] = new OpenMBeanAttributeInfoSupport("playersKilled","Number Of Players Killed",SimpleType.INTEGER, true, false,false);
+		attributes[6] = new OpenMBeanAttributeInfoSupport("playTime","Amount Of Time People have played on this Server",SimpleType.LONG, true, false,false);
+		attributes[7] = new OpenMBeanAttributeInfoSupport("mobsKilled","Number Of Mobs Killed",SimpleType.INTEGER, true, false,false);
+		attributes[8] = new OpenMBeanAttributeInfoSupport("creepersKilled","Number of Creepers Killed",SimpleType.INTEGER, true, false,false);
+		attributes[9] = new OpenMBeanAttributeInfoSupport("skeletonsKilled","Number of Skeletons Killed",SimpleType.INTEGER, true, false,false);
+		attributes[10] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
+		attributes[11] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
+		attributes[12] = new OpenMBeanAttributeInfoSupport("mobsKilledEnviron","Number of mobs killed environmentally",SimpleType.INTEGER, true, false,false);
+		attributes[13] = new OpenMBeanAttributeInfoSupport("creepersKilledEnviron","Number of mobs killed environmentally",SimpleType.INTEGER, true, false,false);
+		attributes[14] = new OpenMBeanAttributeInfoSupport("skeletonsKilledEnviron","Number of mobs killed environmentally",SimpleType.INTEGER, true, false,false);
+		attributes[15] = new OpenMBeanAttributeInfoSupport("zombiesKilledEnviron","Number of mobs killed environmentally",SimpleType.INTEGER, true, false,false);
+		attributes[16] = new OpenMBeanAttributeInfoSupport("spidersKilledEnviron","Number of mobs killed environmentally",SimpleType.INTEGER, true, false,false);
+		attributes[17] = new OpenMBeanAttributeInfoSupport("numberOfPlayers","Number of Players On Server",SimpleType.INTEGER, true, false,false);
+		attributes[18] = new OpenMBeanAttributeInfoSupport("playerDistanceMoved", "Total player distance traveled", SimpleType.DOUBLE, true, false, false);
 
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),
