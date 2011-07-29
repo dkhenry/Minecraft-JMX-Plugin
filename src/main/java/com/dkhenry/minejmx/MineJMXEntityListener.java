@@ -3,6 +3,7 @@ package com.dkhenry.minejmx;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.Zombie;
@@ -71,6 +72,9 @@ public class MineJMXEntityListener extends EntityListener {
 				} else if (subject instanceof Spider ) {
 					playerData.incMobsKilled("spider") ;
 					plugin.serverData.incMobsKilled("spider") ;
+				} else if(subject instanceof Slime) {
+					playerData.incMobsKilled("slime");
+					plugin.serverData.incMobsKilled("slime");
 				}
 			}
 		} else if(cause instanceof EntityDamageByBlockEvent) {
