@@ -52,7 +52,6 @@ public class MineJMXEntityListener extends EntityListener {
 					plugin.log.info("MineJMX Found a new first time Player") ;
 					playerData = new PlayerData(plugin) ;
 					plugin.addPlayer(player.getName(),playerData) ;
-					return ;
 				}
 
 				// Find out  What kind of Monster it was
