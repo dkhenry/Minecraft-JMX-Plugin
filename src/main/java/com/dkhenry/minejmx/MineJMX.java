@@ -56,6 +56,7 @@ public class MineJMX extends JavaPlugin {
 
 	/* The MBeans and their containers */
 	public ServerData serverData ;
+	public ServerPerformanceData serverPerformanceData ; 
 	public Map<String,PlayerData> playerData ;
 	public Map<String,BlockData> blockData ;
 
@@ -153,6 +154,8 @@ public class MineJMX extends JavaPlugin {
 					BlockData bd = BlockData.instanceFromResultSet(rs, this) ;
 					this.addBlock(rs.getString("key"), bd) ;
 					this.blockData.put(rs.getString("key"), bd) ;
+				} else if(rs.getString("type").equals("preformance")) {
+					this.serverPerformanceData = ServerPerformanceData.instanceFromResultSet(rs, this) ;					
 				}
 			}
 			rs.close();
@@ -183,6 +186,8 @@ public class MineJMX extends JavaPlugin {
 			}
 			log.info("Saving: this : server : "+this.serverData.getMetricData()) ;
 			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"') ;") ;
+			
+			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'performance' , '"+this.serverPerformanceData.getMetricData()+"') ;") ;
 
 			rs.close();
 			conn.close();
