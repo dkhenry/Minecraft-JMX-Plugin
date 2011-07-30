@@ -18,9 +18,9 @@ import javax.management.openmbean.SimpleType;
 public class NpeData implements DynamicMBean {
 	// stuff we're exporting
 	private int totalDeaths = 0;/**< Done */
-	private int killsByPlayer = 0;/**< Done */
-	private int killsByEnvironment = 0;/**< Done */
-	private int killsByNpe = 0;/**< Done */
+	private int deathsByPlayer = 0;/**< Done */
+	private int deathsByEnvironment = 0;/**< Done */
+	private int deathsByNpe = 0;/**< Done */
 	private int playersKilled = 0;/**< Done */
 	private int npesKilled = 0;/**< Done */
 
@@ -31,45 +31,45 @@ public class NpeData implements DynamicMBean {
 		this.plugin = instance;
 	}
 
-	// killsByPlayer {{{
+	// deathsByPlayer {{{
 	public int getKillsByPlayer() {
-		return this.killsByPlayer;
+		return this.deathsByPlayer;
 	}
 
-	public void setKillsByPlayer(int killsByPlayer) {
-		this.killsByPlayer = killsByPlayer;
+	public void setKillsByPlayer(int deathsByPlayer) {
+		this.deathsByPlayer = deathsByPlayer;
 	}
 
 	public void incKillsByPlayer() {
-		this.killsByPlayer++;
+		this.deathsByPlayer++;
 	}
 	// }}}
 
-	// killsByEnvironment {{{
+	// deathsByEnvironment {{{
 	public int getKillsByEnvironment() {
-		return this.killsByEnvironment;
+		return this.deathsByEnvironment;
 	}
 
-	public void setKillsByEnvironment(int killsByEnvironment) {
-		this.killsByEnvironment = killsByEnvironment;
+	public void setKillsByEnvironment(int deathsByEnvironment) {
+		this.deathsByEnvironment = deathsByEnvironment;
 	}
 
 	public void incKillsByEnvironment() {
-		this.killsByEnvironment++;
+		this.deathsByEnvironment++;
 	}
 	// }}}
 
-	// killsByNpe {{{
+	// deathsByNpe {{{
 	public int getKillsByNpe() {
-		return this.killsByNpe;
+		return this.deathsByNpe;
 	}
 
-	public void setKillsByNpe(int killsByNpe) {
-		this.killsByNpe = killsByNpe;
+	public void setKillsByNpe(int deathsByNpe) {
+		this.deathsByNpe = deathsByNpe;
 	}
 
 	public void incKillsByNpe() {
-		this.killsByNpe++;
+		this.deathsByNpe++;
 	}
 	// }}}
 
@@ -104,11 +104,11 @@ public class NpeData implements DynamicMBean {
 	@Override public Object getAttribute(String arg0) throws AttributeNotFoundException, MBeanException, ReflectionException {
 		if(arg0.equals("totalDeaths") {
 			return this.getTotalDeaths();
-		} else if(arg0.equals("killsByPlayer")) {
+		} else if(arg0.equals("deathsByPlayer")) {
 			return this.getKillsByPlayer();
-		} else if(arg0.equals("killsByEnvironment")) {
+		} else if(arg0.equals("deathsByEnvironment")) {
 			return this.getKillsByEnvironment();
-		} else if(arg0.equals("killsByNpe")) {
+		} else if(arg0.equals("deathsByNpe")) {
 			return this.getKillsByNpe();
 		} else if(arg0.equals("playersKilled")) {
 			return this.getPlayersKilled();
@@ -138,9 +138,9 @@ public class NpeData implements DynamicMBean {
 		OpenMBeanInfoSupport info;
 		OpenMBeanAttributeInfoSupport[] attributes = {
 			new OpenMBeanAttributeInfoSupport("totalDeaths", "Total number of times killed", SimpleType.INTEGER, true, false, false),
-			new OpenMBeanAttributeInfoSupport("killsByPlayer", "Number of times killed by a player", SimpleType.INTEGER, true, false, false),
-			new OpenMBeanAttributeInfoSupport("killsByEnvironment", "Number of times killed by the environment", SimpleType.INTEGER, true, false, false),
-			new OpenMBeanAttributeInfoSupport("killsByNpe", "Number of times killed by other non-Player Entities", SimpleType.INTEGER, true, false, false),
+			new OpenMBeanAttributeInfoSupport("deathsByPlayer", "Number of times killed by a player", SimpleType.INTEGER, true, false, false),
+			new OpenMBeanAttributeInfoSupport("deathsByEnvironment", "Number of times killed by the environment", SimpleType.INTEGER, true, false, false),
+			new OpenMBeanAttributeInfoSupport("deathsByNpe", "Number of times killed by other non-Player Entities", SimpleType.INTEGER, true, false, false),
 			new OpenMBeanAttributeInfoSupport("playersKilled", "Number of players killed", SimpleType.INTEGER, true, false, false),
 			new OpenMBeanAttributeInfoSupport("npesKilled", "Number of non-Player Entities", SimpleType.INTEGER, true, false, false)
 		};
@@ -165,9 +165,9 @@ public class NpeData implements DynamicMBean {
 	// persistence {{{
 	public String getMetricData() {
 		String rvalue = "";
-		return "killsByPlayer:" + this.killsByPlayer +
-		       ",killsByEnvironment:" + this.killsByEnvironment +
-			   ",killsByNpe:" + this.killsByNpe +
+		return "deathsByPlayer:" + this.deathsByPlayer +
+		       ",deathsByEnvironment:" + this.deathsByEnvironment +
+			   ",deathsByNpe:" + this.deathsByNpe +
 			   ",playersKilled:" + this.playersKilled;
 	}
 
@@ -180,11 +180,11 @@ public class NpeData implements DynamicMBean {
 		String[] datas = data.split(",");
 		for(String s : datas) {
 			String[] keyval = s.split(":");
-			if(keyval[0].equals("killsByPlayer")) {
+			if(keyval[0].equals("deathsByPlayer")) {
 				entry.setKillsByPlayer(Integer.decode(keyval[1]));
-			} else if(keyval[0].equals("killsByEnvironment")) {
+			} else if(keyval[0].equals("deathsByEnvironment")) {
 				entry.setKillsByEnvironment(Integer.decode(keyval[1]));
-			} else if(keyval[0].equals("killsByNpe")) {
+			} else if(keyval[0].equals("deathsByNpe")) {
 				entry.setKillsByNpe(Integer.decode(keyval[1]));
 			} else if(keyval[0].equals("playersKilled")) {
 				entry.setPlayersKilled(Integer.decode(keyval[1]));
