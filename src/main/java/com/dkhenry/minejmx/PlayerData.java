@@ -20,16 +20,19 @@ import javax.management.openmbean.SimpleType;
 
 public class PlayerData implements DynamicMBean {
 	// stuff we're exporting
-	private long timeOnServer = 0;/**< Done */
+	private long timeOnServer = 0; /**< Done */
 	private int numberOfLogins = 0; /**< Done */
 	private int blocksPlaced = 0; /**< Done */
 	private int blocksDestroyed = 0; /**< Done */
 	private int itemsCrafted = 0;
 	private int playersKilled = 0; /**< Done */
-	private Map<String,Integer> mobsKilled ; /** Done */
+	private Map<String,Integer> mobsKilled ; /**< Done */
 	private int deaths = 0 ; /**< Done */
 	private int active = 0 ; /**< Done */
 	private double distanceMoved = 0.0; /**< Done */
+	private int deathsByPlayer = 0; /**< In progress */
+	private int deathsByEnvironment = 0; /**< In progress */
+	private int deathsByNpe = 0; /**< In progress */
 
 	// internal use
 	private long loggedInTimestamp = -1; // timestamp of when the player logged in; -1 if they're not logged in
