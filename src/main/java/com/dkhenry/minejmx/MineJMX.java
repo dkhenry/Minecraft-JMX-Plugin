@@ -91,6 +91,8 @@ public class MineJMX extends JavaPlugin {
 
 	private JmxAuthenticatorImple auth = new JmxAuthenticatorImple() ;
 
+	private ServerTickPoller tickPoller;
+
 	/**
 	 * @brief This Function handles Loading the Configuration
 	 */
@@ -400,6 +402,9 @@ public class MineJMX extends JavaPlugin {
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal ,this) ;
 
 		// Server Events
+		this.tickPoller = new ServerTickPoller(this) ;
+		this.tickPoller.setInterval(40) ; 
+		this.tickPoller.registerWithScheduler(getServer().getScheduler()) ; 
 
 		log.info("The MineJMX Plugin has been enabled.") ;
 	}

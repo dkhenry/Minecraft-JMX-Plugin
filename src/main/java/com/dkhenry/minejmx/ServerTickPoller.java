@@ -6,9 +6,25 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class ServerTickPoller implements Runnable {
 	
 	private MineJMX plugin ;
-	private long interval ;
+	private long interval =40;
 	private long lastPoll = System.currentTimeMillis() ; 	
 	
+	public long getInterval() {
+		return interval;
+	}
+
+	public void setInterval(long interval) {
+		this.interval = interval;
+	}
+
+	public long getLastPoll() {
+		return lastPoll;
+	}
+
+	public void setLastPoll(long lastPoll) {
+		this.lastPoll = lastPoll;
+	}
+
 	public ServerTickPoller(MineJMX instance) { 
 		plugin = instance ; 
 	}

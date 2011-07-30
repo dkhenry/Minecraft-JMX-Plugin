@@ -23,8 +23,7 @@ public class ServerPerformanceData implements DynamicMBean {
 
 	private MineJMX plugin ; 
 	
-	private long serverTicks ; 
-	private long activeTasks ; 
+	private long serverTicks ; 	
 	private long runningTasks ; 
 	private long pendingTasks ; 
 	private int ticksPerSecondAverage ; 
@@ -40,8 +39,6 @@ public class ServerPerformanceData implements DynamicMBean {
 			MBeanException, ReflectionException {
 		if(arg0.equals("serverTicks")) {
 			return getServerTicks() ;
-		} else if(arg0.equals("activeTasks")) {
-			return getActiveTasks() ;
 		} else if(arg0.equals("runningTasks")) {
 			return getRunningTasks() ;
 		} else if(arg0.equals("pendingTasks")) {
@@ -76,16 +73,15 @@ public class ServerPerformanceData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[7];
+		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[6];
 
 		//Build the Attributes
-		attributes[0] = new OpenMBeanAttributeInfoSupport("serverTicks","Number or Total Server Ticks",SimpleType.LONG, true, false,false);
-		attributes[1] = new OpenMBeanAttributeInfoSupport("activeTasks","Number of Active Tasks on this Server",SimpleType.LONG, true, false,false);
-		attributes[2] = new OpenMBeanAttributeInfoSupport("runningTasks","Number or Running Tasks on this Server",SimpleType.LONG, true, false,false);
-		attributes[3] = new OpenMBeanAttributeInfoSupport("pendingTasks","Number or Total Server Ticks",SimpleType.LONG, true, false,false);
+		attributes[0] = new OpenMBeanAttributeInfoSupport("serverTicks","Number or Total Server Ticks",SimpleType.LONG, true, false,false);		
+		attributes[1] = new OpenMBeanAttributeInfoSupport("runningTasks","Number or Running Tasks on this Server",SimpleType.LONG, true, false,false);
+		attributes[2] = new OpenMBeanAttributeInfoSupport("pendingTasks","Number or Total Server Ticks",SimpleType.LONG, true, false,false);
 		attributes[3] = new OpenMBeanAttributeInfoSupport("ticksPerSecondAverage","Average Number of Ticks Per Second ",SimpleType.INTEGER, true, false,false);
-		attributes[3] = new OpenMBeanAttributeInfoSupport("ticksPerSecondInstantious","Number of Ticks Per Second ",SimpleType.INTEGER, true, false,false);
-		attributes[3] = new OpenMBeanAttributeInfoSupport("serverLag","Generic Server Lag Indicator ( In Ticks per Second )",SimpleType.INTEGER, true, false,false);
+		attributes[4] = new OpenMBeanAttributeInfoSupport("ticksPerSecondInstantious","Number of Ticks Per Second ",SimpleType.INTEGER, true, false,false);
+		attributes[5] = new OpenMBeanAttributeInfoSupport("serverLag","Generic Server Lag Indicator ( In Ticks per Second )",SimpleType.INTEGER, true, false,false);
 		
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),
@@ -112,14 +108,6 @@ public class ServerPerformanceData implements DynamicMBean {
 		return new AttributeList() ;
 	}
 
-	public MineJMX getPlugin() {
-		return plugin;
-	}
-
-	public void setPlugin(MineJMX plugin) {
-		this.plugin = plugin;
-	}
-
 	public long getServerTicks() {
 		return serverTicks;
 	}
@@ -132,28 +120,18 @@ public class ServerPerformanceData implements DynamicMBean {
 		this.serverTicks+=ServerTicks ; 
 	}
 
-	public long getActiveTasks() {
-		return activeTasks;
-	}
-
-	public void setActiveTasks(long activeTasks) {
-		this.activeTasks = activeTasks;
-	}
-
 	public long getRunningTasks() {
-		return runningTasks;
+		return plugin.getServer().getScheduler().getActiveWorkers().size() ; 
 	}
 
-	public void setRunningTasks(long runningTasks) {
-		this.runningTasks = runningTasks;
+	public void setRunningTasks(long runningTasks) {		
 	}
 
 	public long getPendingTasks() {
-		return pendingTasks;
+		return plugin.getServer().getScheduler().getPendingTasks().size() ; 
 	}
 
-	public void setPendingTasks(long pendingTasks) {
-		this.pendingTasks = pendingTasks;
+	public void setPendingTasks(long pendingTasks) {		
 	}
 
 	public int getTicksPerSecondAverage() {
@@ -173,21 +151,21 @@ public class ServerPerformanceData implements DynamicMBean {
 	}
 	
 	public void setTickRate(int ticksPerSecond) { 
-		
+		this.ticksPerSecondInstantious = ticksPerSecond ; 
+		this.ticksPerSecondAverage = (this.ticksPerSecondAverage*19 + ticksPerSecond) / 20 ;  
 	}
 
-	public int getServerLag() {
-		return serverLag;
+	public int getServerLag() {		
+		return this.ticksPerSecondAverage - this.ticksPerSecondInstantious  ;  		
 	}
 
 	public void setServerLag(int serverLag) {
-		this.serverLag = serverLag;
+		
 	}
 	
 	public String getMetricData() {		 
 		String rvalue = "" ;
 		return "serverTicks:"+this.serverTicks+
-				",activeTasks:"+this.activeTasks+
 				",runningTasks:"+this.runningTasks+
 				",pendingTasks:"+this.pendingTasks+
 				",ticksPerSecondAverage:"+this.ticksPerSecondAverage+
@@ -206,8 +184,6 @@ public class ServerPerformanceData implements DynamicMBean {
 			String[] keyval = s.split(":") ;
 			if( keyval[0].equals("serverTicks") ) {
 				sd.setServerTicks(Long.decode(keyval[1])) ;
-			} else if( keyval[0].equals("activeTasks") ) {
-				sd.setActiveTasks(Long.decode(keyval[1])) ;
 			} else if( keyval[0].equals("runningTasks") ) {
 				sd.setRunningTasks(Long.decode(keyval[1])) ;
 			} else if( keyval[0].equals("pendingTasks") ) {
