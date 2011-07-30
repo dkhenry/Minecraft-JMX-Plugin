@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dkhenry</groupId>
 	<artifactId>MineJMX</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>MineJMX</name>
 	<description>Plugin to Allow reporting of Stats via JMX </description>
 	<url>https://github.com/dkhenry/Minecraft-JMX-Plugin</url>

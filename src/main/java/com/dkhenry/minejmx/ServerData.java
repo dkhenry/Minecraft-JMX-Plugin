@@ -44,7 +44,7 @@ public class ServerData implements DynamicMBean {
 		this.mobsKilled.put("spider", new Integer(0));
 		this.mobsKilled.put("zombie", new Integer(0));
 		this.mobsKilled.put("skeleton", new Integer(0));
-		this.mobsKilled.push("slime", new Integer(0));
+		this.mobsKilled.put("slime", new Integer(0));
 	}
 
 	// blocksPlaced {{{
