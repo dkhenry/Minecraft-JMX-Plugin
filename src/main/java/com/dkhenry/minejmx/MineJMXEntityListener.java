@@ -1,12 +1,7 @@
 package com.dkhenry.minejmx;
 
-import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Spider;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -47,6 +42,7 @@ public class MineJMXEntityListener extends EntityListener {
 			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager() ;
 			if( predicate instanceof Player ) {
 				Player player = (Player) predicate ;
+				String mobType;
 
 				// Increment The Per Player Stats
 				PlayerData playerData = null ;
@@ -60,33 +56,27 @@ public class MineJMXEntityListener extends EntityListener {
 				}
 
 				// Find out  What kind of Monster it was
-				if( subject instanceof Creeper) {
-					playerData.incMobsKilled("creeper") ;
-					plugin.serverData.incMobsKilled("creeper") ;
-				} else if (subject instanceof Skeleton ) {
-					playerData.incMobsKilled("skeleton") ;
-					plugin.serverData.incMobsKilled("skeleton") ;
-				} else if (subject instanceof Zombie ) {
-					playerData.incMobsKilled("zombie") ;
-					plugin.serverData.incMobsKilled("zombie") ;
-				} else if (subject instanceof Spider ) {
-					playerData.incMobsKilled("spider") ;
-					plugin.serverData.incMobsKilled("spider") ;
-				} else if(subject instanceof Slime) {
-					playerData.incMobsKilled("slime");
-					plugin.serverData.incMobsKilled("slime");
+				mobType = subject.class.getName().replace('$', '.');
+				if(mobType.lastIndexOf('.') > 0) {
+					mobType = mobType.substring(mobType.lastIndexOf('.') + 1).toLowerCase();
+				}
+				if(plugin.serverData.getMobsKilled().containsKey(mobType) {
+					playerData.incMobsKilled(mobType);
+					plugin.serverData.incMobsKilled(mobType);
+				} else {
+					plugin.log.debug("MineJMX: A player killed an unknown mob type (\"" + mobType + "\")");
 				}
 			}
 		} else if(cause instanceof EntityDamageByBlockEvent) {
 			// it was killed environmentally; let's increment the appropriate counter for this mob type
-			if(subject instanceof Creeper) {
-				plugin.serverData.incMobsKilledEnviron("creeper");
-			} else if(subject instanceof Skeleton) {
-				plugin.serverData.incMobsKilledEnviron("skeleton");
-			} else if(subject instanceof Zombie) {
-				plugin.serverData.incMobsKilledEnviron("zombie");
-			} else if(subject instanceof Spider) {
-				plugin.serverData.incMobsKilledEnviron("spider");
+			String mobType = subject.class.getName().replace('$', '.');
+			if(mobType.lastIndexOf('.') > 0) {
+				mobType = mobType.substring(mobType.lastIndexOf('.') + 1).toLowerCase();
+			}
+			if(plugin.serverData.getMobsKilled().containsKey(mobType) {
+				plugin.serverData.incMobsKilledEnviron(mobType);
+			} else {
+				plugin.log.debug("MineJMX: An unknown mob type (\"" + mobType + "\") was killed environmentally");
 			}
 		}
 	}
