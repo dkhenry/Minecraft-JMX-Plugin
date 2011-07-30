@@ -281,9 +281,9 @@ public class ServerData implements DynamicMBean {
 			return this.mobsKilled.get("cow");
 		} else if(arg0.equals("pigsKilled") {
 			return this.mobsKilled.get("pigs");
-		} else if(arg0.equals("sheepKilled") {
+		} else if(arg0.equals("sheepsKilled") {
 			return this.mobsKilled.get("sheep");
-		} else if(arg0.equals("wolvesKilled") {
+		} else if(arg0.equals("wolfsKilled") {
 			return this.mobsKilled.get("wolf");
 		} else if(arg0.equals("mobsKilledEnviron")) {
 			return
@@ -315,9 +315,9 @@ public class ServerData implements DynamicMBean {
 			return this.mobsKilledEnviron.get("cow");
 		} else if(arg0.equals("pigsKilledEnviron") {
 			return this.mobsKilledEnviron.get("pigs");
-		} else if(arg0.equals("sheepKilledEnviron") {
+		} else if(arg0.equals("sheepsKilledEnviron") {
 			return this.mobsKilledEnviron.get("sheep");
-		} else if(arg0.equals("wolvesKilledEnviron") {
+		} else if(arg0.equals("wolfsKilledEnviron") {
 			return this.mobsKilledEnviron.get("wolf");
 		} else if(arg0.equals("numberOfPlayers")) {
 			return this.getNumberOfPlayers() ;

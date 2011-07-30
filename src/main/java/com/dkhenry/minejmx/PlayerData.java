@@ -244,9 +244,9 @@ public class PlayerData implements DynamicMBean {
 			return this.mobsKilled.get("cow");
 		} else if(arg0.equals("pigsKilled")) {
 			return this.mobsKilled.get("pig");
-		} else if(arg0.equals("sheepKilled")) {
+		} else if(arg0.equals("sheepsKilled")) {
 			return this.mobsKilled.get("sheep");
-		} else if(arg0.equals("wolvesKilled")) {
+		} else if(arg0.equals("wolfsKilled")) {
 			return this.mobsKilled.get("wolf");
 		} else if(arg0.equals("deaths")) {
 			return getDeaths() ;
@@ -297,8 +297,8 @@ public class PlayerData implements DynamicMBean {
 		attributes[12] = new OpenMBeanAttributeInfoSupport("chickensKilled", "Number of Chickens killed", SimpleType.INTEGER, true, false, false);
 		attributes[13] = new OpenMBeanAttributeInfoSupport("cowsKilled", "Number of Cows killed", SimpleType.INTEGER, true, false, false);
 		attributes[14] = new OpenMBeanAttributeInfoSupport("pigsKilled", "Number of Pigs killed", SimpleType.INTEGER, true, false, false);
-		attributes[15] = new OpenMBeanAttributeInfoSupport("sheepKilled", "Number of Sheep killed", SimpleType.INTEGER, true, false, false);
-		attributes[16] = new OpenMBeanAttributeInfoSupport("wolvesKilled" "Number of Wolves killed", SimpleType.INTEGER, true, false, false);
+		attributes[15] = new OpenMBeanAttributeInfoSupport("sheepsKilled", "Number of Sheep killed", SimpleType.INTEGER, true, false, false);
+		attributes[16] = new OpenMBeanAttributeInfoSupport("wolfsKilled" "Number of Wolves killed", SimpleType.INTEGER, true, false, false);
 		attributes[17] = new OpenMBeanAttributeInfoSupport("deaths","Number of deaths on this server",SimpleType.INTEGER, true, false,false);
 		attributes[18] = new OpenMBeanAttributeInfoSupport("active","If this player is active",SimpleType.INTEGER, true, false,false);
 		attributes[19] = new OpenMBeanAttributeInfoSupport("distanceMoved", "How far this player has moved", SimpleType.DOUBLE, true, false, false);
