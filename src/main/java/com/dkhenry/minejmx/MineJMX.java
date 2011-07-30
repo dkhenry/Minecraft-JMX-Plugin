@@ -56,6 +56,7 @@ public class MineJMX extends JavaPlugin {
 
 	/* The MBeans and their containers */
 	public ServerData serverData ;
+	public ServerPerformanceData serverPerformanceData ; 
 	public Map<String,PlayerData> playerData ;
 	public Map<String,BlockData> blockData ;
 	public Map<String,NpeData> npeData;
@@ -90,6 +91,8 @@ public class MineJMX extends JavaPlugin {
 	}
 
 	private JmxAuthenticatorImple auth = new JmxAuthenticatorImple() ;
+
+	private ServerTickPoller tickPoller;
 
 	/**
 	 * @brief This Function handles Loading the Configuration
@@ -155,6 +158,8 @@ public class MineJMX extends JavaPlugin {
 				} else if(rs.getString("type").equals("npe")) {
 					NpeData nd = NpeDate.instanceFromResultSet(rs, this);
 					this.addNpe(rs.getString("key"), nd);
+				} else if(rs.getString("type").equals("performance")) {
+					this.serverPerformanceData = ServerPerformanceData.instanceFromResultSet(rs, this) ;					
 				}
 			}
 			rs.close();
@@ -190,6 +195,8 @@ public class MineJMX extends JavaPlugin {
 			}
 			log.info("Saving: this : server : "+this.serverData.getMetricData()) ;
 			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"') ;") ;
+			
+			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'performance' , '"+this.serverPerformanceData.getMetricData()+"') ;") ;
 
 			rs.close();
 			conn.close();
@@ -446,6 +453,9 @@ public class MineJMX extends JavaPlugin {
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal ,this) ;
 
 		// Server Events
+		this.tickPoller = new ServerTickPoller(this) ;
+		this.tickPoller.setInterval(40) ; 
+		this.tickPoller.registerWithScheduler(getServer().getScheduler()) ; 
 
 		log.info("The MineJMX Plugin has been enabled.") ;
 	}
