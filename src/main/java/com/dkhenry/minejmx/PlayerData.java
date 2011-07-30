@@ -194,6 +194,48 @@ public class PlayerData implements DynamicMBean {
 	}
 	// }}}
 
+	// deathsByPlayer {{{
+	public int getDeathsByPlayer() {
+		return this.deathsByPlayer;
+	}
+
+	public void setDeathsByPlayer(int deathsByPlayer) {
+		this.deathsByPlayer = deathsByPlayer;
+	}
+
+	public void incDeathsByPlayer() {
+		this.deathsByPlayer++;
+	}
+	// }}}
+
+	// deathsByEnvironment {{{
+	public int getDeathsByEnvironment() {
+		return this.deathsByEnvironment;
+	}
+
+	public void setDeathsByEnvironment(int deathsByEnvironment) {
+		this.deathsByEnvironment = deathsByEnvironment;
+	}
+
+	public void incDeathsByEnvironment() {
+		this.deathsByEnvironment++;
+	}
+	// }}}
+
+	// deathsByNpe {{{
+	public int getDeathsByNpe() {
+		return this.deathsByNpe;
+	}
+
+	public void setDeathsByNpe(int deathsByNpe) {
+		this.deathsByNpe = deathsByNpe;
+	}
+
+	public void incDeathsByNpe() {
+		this.deathsByNpe++;
+	}
+	// }}}
+
 	public long timeSinceLogin() {
 		if(this.loggedInTimestamp == -1) {
 			return -1;
@@ -278,6 +320,12 @@ public class PlayerData implements DynamicMBean {
 			return getActive() ;
 		} else if(arg0.equals("distanceMoved")) {
 			return this.getDistanceMoved();
+		} else if(arg0.equals("deathsByPlayer")) {
+			return this.getDeathsByPlayer();
+		} else if(arg0.equals("deathsByEnvironment")) {
+			return this.getDeathsByEnvironment();
+		} else if(arg0.equals("deathsByNpe")) {
+			return this.getDeathsByNpe();
 		}
 
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute") ;
@@ -303,7 +351,7 @@ public class PlayerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[21];
+		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[25];
 
 		//Build the Attributes
 		attributes[0] = new OpenMBeanAttributeInfoSupport("timeOnServer", "Time spent on this server in milliseconds", SimpleType.LONG, true, false, false);
@@ -328,6 +376,9 @@ public class PlayerData implements DynamicMBean {
 		attributes[19] = new OpenMBeanAttributeInfoSupport("deaths", "Number of deaths on this server", SimpleType.INTEGER, true, false, false);
 		attributes[20] = new OpenMBeanAttributeInfoSupport("active", "If this player is active", SimpleType.INTEGER, true, false, false);
 		attributes[21] = new OpenMBeanAttributeInfoSupport("distanceMoved", "How far this player has moved", SimpleType.DOUBLE, true, false, false);
+		attributes[22] = new OpenMBeanAttributeInfoSupport("deathsByPlayer", "How many times this player was killed by other players", SimpleType.INTEGER, true, false, false);
+		attributes[23] = new OpenMBeanAttributeInfoSupport("deathsByEnvironment", "How many times this player was killed by environmental causes", SimpleType.INTEGER, true, false, false);
+		attributes[24] = new OpenMBeanAttributeInfoSupport("deathsByNpe", "How many times this player was killed by non-Player Entities", SimpleType.INTEGER, true, false, false);
 
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),
@@ -369,6 +420,9 @@ public class PlayerData implements DynamicMBean {
 				",deaths:"+this.deaths+
 				",active:"+this.active +
 				",distanceMoved:" + this.distanceMoved +
+				",deathsByPlayer:" + this.deathsByPlayer +
+				",deathsByEnvironment:" + this.deathsByEnvironment +
+				",deathsByNpe:" + this.deathsByNpe +
 				rvalue;
 	}
 
@@ -399,6 +453,12 @@ public class PlayerData implements DynamicMBean {
 				// Don't Set Player Active
 			} else if(keyval[0].equals("distanceMoved")) {
 				pd.setDistanceMoved(Double.decode(keyval[1]));
+			} else if(keyval[0].equals("deathsByPlayer")) {
+				pd.setDeathsByPlayer(Integer.decode(keyval[1]));
+			} else if(keyval[0].equals("deathsByEnvironment")) {
+				pd.setDeathsByEnvironment(Integer.decode(keyval[1]));
+			} else if(keyval[0].equals("deathsByNpe")) {
+				pd.setDeathsByNpe(Integer.decode(keyval[1]));
 			} else {
 				pd.getMobsKilled().put(keyval[0], Integer.decode(keyval[1])) ;
 			}

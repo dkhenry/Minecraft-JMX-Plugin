@@ -18,7 +18,7 @@ public class MineJMXEntityListener extends EntityListener {
 	private void handlePlayerDeath(Player subject) {
 		EntityDamageEvent cause = subject.getLastDamageCause();
 
-		// Increment the PlayerData statistics
+		// Increment the PlayerData total death stat
 		PlayerData playerData = this.plugin.getPlayerData(subject.getName(), "MineJMX found a new Player");
 		playerData.incDeaths();
 
@@ -31,11 +31,20 @@ public class MineJMXEntityListener extends EntityListener {
 				// The player was killed by another player, dick move bro
 				PlayerData killerData = this.plugin.getPlayerData(((Player)predicate).getName());
 				killerData.incPlayersKilled();
+
+				// Increment the victim's PvP death stat
+				playerData.incDeathsByPlayer();
 			} else {
 				// The player was killed by a mob, increment the NpeData statistics
 				NpeData killerData = this.plugin.getNpeDataByClass(predicate.getClass());
 				npeData.incPlayersKilled();
+
+				// Increment the victim's death by NPE stat
+				playerData.incDeathsByNpe();
 			}
+		} else if(cause instanceof EntityDamageByBlockEvent) {
+			// drowned, burned, fell, got stabbed by cactus, etc...increment the environmental death counter
+			playerData.incDeathsByEnvironment();
 		}
 	}
 
