@@ -2,9 +2,6 @@ package com.dkhenry.minejmx;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -20,11 +17,12 @@ import javax.management.openmbean.SimpleType;
 
 public class NpeData implements DynamicMBean {
 	// stuff we're exporting
-	private int killsByPlayer = 0;/**< In progress */
-	private int killsByEnvironment = 0;/**< In progress */
-	private int killsByNpe = 0;/**< In progress */
-	private int playersKilled = 0;/**< In progress */
-	//private int npesKilled = 0;/**< Not sure if relevant */
+	private int totalDeaths = 0;/**< Done */
+	private int killsByPlayer = 0;/**< Done */
+	private int killsByEnvironment = 0;/**< Done */
+	private int killsByNpe = 0;/**< Done */
+	private int playersKilled = 0;/**< Done */
+	private int npesKilled = 0;/**< Done */
 
 	// need to access the plugin object from this one
 	private MineJMX plugin;
@@ -89,8 +87,24 @@ public class NpeData implements DynamicMBean {
 	}
 	// }}}
 
+	// npesKilled {{{
+	public int getNpesKilled() {
+		return this.npesKilled;
+	}
+
+	public void setNpesKilled(int npesKilled) {
+		this.npesKilled = playersKilled;
+	}
+
+	public void incNpesKilled() {
+		this.npesKilled++;
+	}
+	// }}}
+
 	@Override public Object getAttribute(String arg0) throws AttributeNotFoundException, MBeanException, ReflectionException {
-		if(arg0.equals("killsByPlayer")) {
+		if(arg0.equals("totalDeaths") {
+			return this.getTotalDeaths();
+		} else if(arg0.equals("killsByPlayer")) {
 			return this.getKillsByPlayer();
 		} else if(arg0.equals("killsByEnvironment")) {
 			return this.getKillsByEnvironment();
@@ -98,6 +112,8 @@ public class NpeData implements DynamicMBean {
 			return this.getKillsByNpe();
 		} else if(arg0.equals("playersKilled")) {
 			return this.getPlayersKilled();
+		} else if(arg0.equals("npesKilled")) {
+			return this.getNpesKilled();
 		}
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute");
 	}
@@ -121,10 +137,12 @@ public class NpeData implements DynamicMBean {
 	@Override public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
 		OpenMBeanAttributeInfoSupport[] attributes = {
+			new OpenMBeanAttributeInfoSupport("totalDeaths", "Total number of times killed", SimpleType.INTEGER, true, false, false),
 			new OpenMBeanAttributeInfoSupport("killsByPlayer", "Number of times killed by a player", SimpleType.INTEGER, true, false, false),
 			new OpenMBeanAttributeInfoSupport("killsByEnvironment", "Number of times killed by the environment", SimpleType.INTEGER, true, false, false),
-			new OpenMBeanAttributeInfoSupport("killsByNpe", "Number of times killed by other non-player entities", SimpleType.INTEGER, true, false, false),
-			new OpenMBeanAttributeInfoSupport("playersKilled", "Number of players killed", SimpleType.INTEGER, true, false, false)
+			new OpenMBeanAttributeInfoSupport("killsByNpe", "Number of times killed by other non-Player Entities", SimpleType.INTEGER, true, false, false),
+			new OpenMBeanAttributeInfoSupport("playersKilled", "Number of players killed", SimpleType.INTEGER, true, false, false),
+			new OpenMBeanAttributeInfoSupport("npesKilled", "Number of non-Player Entities", SimpleType.INTEGER, true, false, false)
 		};
 
 		//Build the info

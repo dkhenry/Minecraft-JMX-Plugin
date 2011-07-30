@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.Class;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -387,6 +388,11 @@ public class MineJMX extends JavaPlugin {
 		return npeData;
 	}
 
+	public NpeData getNpeDataByClass(Class that) {
+		String name = MineJMX.getSimpleClassName(that);
+		return this.getNpeData(name, "MineJMX is seeing non-player Entity type \"" + name + "\" for the first time.");
+	}
+
 	@Override
 	public void onDisable() {
 		saveState() ;
@@ -458,6 +464,13 @@ public class MineJMX extends JavaPlugin {
 		this.tickPoller.registerWithScheduler(getServer().getScheduler()) ; 
 
 		log.info("The MineJMX Plugin has been enabled.") ;
+	}
+
+	public static String getSimpleClassName(Class cls) {
+		String name = cls.getName().replace('$', '.');
+		if(name.lastIndexOf('.') > 0) {
+			name = name.substring(name.lastIndexOf('.') + 1);
+		}
 	}
 }
 

@@ -28,7 +28,7 @@ public class PlayerData implements DynamicMBean {
 	private Map<String,Integer> mobsKilled ; /** Done */
 	private int deaths = 0 ; /**< Done */
 	private int active = 0 ; /**< Done */
-	private double distanceMoved = 0.0; /**< In progress */
+	private double distanceMoved = 0.0; /**< Done */
 
 	// internal use
 	private long loggedInTimestamp = -1; // timestamp of when the player logged in; -1 if they're not logged in
@@ -50,6 +50,7 @@ public class PlayerData implements DynamicMBean {
 		this.mobsKilled.put("cow", new Integer(0));
 		this.mobsKilled.put("pig", new Integer(0));
 		this.mobsKilled.put("sheep", new Integer(0));
+		this.mobsKilled.put("squid", new Integer(0));
 		this.mobsKilled.put("wolf", new Integer(0));
 	}
 
@@ -237,6 +238,7 @@ public class PlayerData implements DynamicMBean {
 				this.mobsKilled.get("cow") +
 				this.mobsKilled.get("pig") +
 				this.mobsKilled.get("sheep") +
+				this.mobsKilled.get("squid") +
 				this.mobsKilled.get("wolf");
 		} else if(arg0.equals("chickensKilled")) {
 			return this.mobsKilled.get("chicken");
@@ -246,6 +248,8 @@ public class PlayerData implements DynamicMBean {
 			return this.mobsKilled.get("pig");
 		} else if(arg0.equals("sheepsKilled")) {
 			return this.mobsKilled.get("sheep");
+		} else if(arg0.equals("squidsKilled")) {
+			return this.mobsKilled.get("squid");
 		} else if(arg0.equals("wolfsKilled")) {
 			return this.mobsKilled.get("wolf");
 		} else if(arg0.equals("deaths")) {
@@ -279,7 +283,7 @@ public class PlayerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[20];
+		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[21];
 
 		//Build the Attributes
 		attributes[0] = new OpenMBeanAttributeInfoSupport("timeOnServer", "Time spent on this server in milliseconds", SimpleType.LONG, true, false, false);
@@ -298,10 +302,11 @@ public class PlayerData implements DynamicMBean {
 		attributes[13] = new OpenMBeanAttributeInfoSupport("cowsKilled", "Number of Cows killed", SimpleType.INTEGER, true, false, false);
 		attributes[14] = new OpenMBeanAttributeInfoSupport("pigsKilled", "Number of Pigs killed", SimpleType.INTEGER, true, false, false);
 		attributes[15] = new OpenMBeanAttributeInfoSupport("sheepsKilled", "Number of Sheep killed", SimpleType.INTEGER, true, false, false);
-		attributes[16] = new OpenMBeanAttributeInfoSupport("wolfsKilled" "Number of Wolves killed", SimpleType.INTEGER, true, false, false);
-		attributes[17] = new OpenMBeanAttributeInfoSupport("deaths","Number of deaths on this server",SimpleType.INTEGER, true, false,false);
-		attributes[18] = new OpenMBeanAttributeInfoSupport("active","If this player is active",SimpleType.INTEGER, true, false,false);
-		attributes[19] = new OpenMBeanAttributeInfoSupport("distanceMoved", "How far this player has moved", SimpleType.DOUBLE, true, false, false);
+		attributes[16] = new OpenMBeanAttributeInfoSupport("squidsKilled", "Number of Squids killed", SimpleType.INTEGER, true, false, false);
+		attributes[17] = new OpenMBeanAttributeInfoSupport("wolfsKilled", "Number of Wolves killed", SimpleType.INTEGER, true, false, false);
+		attributes[18] = new OpenMBeanAttributeInfoSupport("deaths", "Number of deaths on this server",SimpleType.INTEGER, true, false,false);
+		attributes[19] = new OpenMBeanAttributeInfoSupport("active", "If this player is active",SimpleType.INTEGER, true, false,false);
+		attributes[20] = new OpenMBeanAttributeInfoSupport("distanceMoved", "How far this player has moved", SimpleType.DOUBLE, true, false, false);
 
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),
@@ -340,7 +345,9 @@ public class PlayerData implements DynamicMBean {
 				",blocksDestroyed:"+this.blocksDestroyed+
 				",itemsCrafted:"+this.itemsCrafted+
 				",deaths:"+this.deaths+
-				",active:"+this.active+rvalue ;
+				",active:"+this.active +
+				",distanceMoved:" + this.distanceMoved +
+				rvalue;
 	}
 
 	public static PlayerData instanceFromResultSet(ResultSet rs, MineJMX plugin) throws SQLException {
@@ -366,6 +373,8 @@ public class PlayerData implements DynamicMBean {
 				pd.setDeaths(Integer.decode(keyval[1])) ;
 			} else if( keyval[0].equals("active") ) {
 				// Don't Set Player Active
+			} else if(keyval[0].equals("distanceMoved")) {
+				pd.setDistanceMoved(Double.decode(keyval[1]));
 			} else {
 				pd.getMobsKilled().put(keyval[0], Integer.decode(keyval[1])) ;
 			}
