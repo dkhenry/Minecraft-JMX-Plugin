@@ -30,9 +30,9 @@ public class PlayerData implements DynamicMBean {
 	private int deaths = 0 ; /**< Done */
 	private int active = 0 ; /**< Done */
 	private double distanceMoved = 0.0; /**< Done */
-	private int deathsByPlayer = 0; /**< In progress */
-	private int deathsByEnvironment = 0; /**< In progress */
-	private int deathsByNpe = 0; /**< In progress */
+	private int deathsByPlayer = 0; /**< Done */
+	private int deathsByEnvironment = 0; /**< Done */
+	private int deathsByNpe = 0; /**< Done */
 
 	// internal use
 	private long loggedInTimestamp = -1; // timestamp of when the player logged in; -1 if they're not logged in
