@@ -31,44 +31,62 @@ public class NpeData implements DynamicMBean {
 		this.plugin = instance;
 	}
 
+	// totalDeaths {{{
+	public int getTotalDeaths() {
+		return totalDeaths;
+	}
+
+	public void setTotalDeaths(int totalDeaths) {
+		this.totalDeaths = totalDeaths;
+	}
+	
+	public void incTotalDeaths() { 
+		incTotalDeaths(1) ; 
+	}
+	
+	public void incTotalDeaths(int increment) { 
+		this.totalDeaths+= increment ; 
+	}
+	// }}}
+
 	// deathsByPlayer {{{
-	public int getKillsByPlayer() {
+	public int getDeathsByPlayer() {
 		return this.deathsByPlayer;
 	}
 
-	public void setKillsByPlayer(int deathsByPlayer) {
+	public void setDeathsByPlayer(int deathsByPlayer) {
 		this.deathsByPlayer = deathsByPlayer;
 	}
 
-	public void incKillsByPlayer() {
+	public void incDeathsByPlayer() {
 		this.deathsByPlayer++;
 	}
 	// }}}
 
 	// deathsByEnvironment {{{
-	public int getKillsByEnvironment() {
+	public int getDeathsByEnvironment() {
 		return this.deathsByEnvironment;
 	}
 
-	public void setKillsByEnvironment(int deathsByEnvironment) {
+	public void setDeathsByEnvironment(int deathsByEnvironment) {
 		this.deathsByEnvironment = deathsByEnvironment;
 	}
 
-	public void incKillsByEnvironment() {
+	public void incDeathsByEnvironment() {
 		this.deathsByEnvironment++;
 	}
 	// }}}
 
 	// deathsByNpe {{{
-	public int getKillsByNpe() {
+	public int getDeathsByNpe() {
 		return this.deathsByNpe;
 	}
 
-	public void setKillsByNpe(int deathsByNpe) {
+	public void setDeathsByNpe(int deathsByNpe) {
 		this.deathsByNpe = deathsByNpe;
 	}
 
-	public void incKillsByNpe() {
+	public void incDeathsByNpe() {
 		this.deathsByNpe++;
 	}
 	// }}}
@@ -106,57 +124,17 @@ public class NpeData implements DynamicMBean {
 		if(arg0.equals("totalDeaths")) {
 			return this.getTotalDeaths();
 		} else if(arg0.equals("deathsByPlayer")) {
-			return this.getKillsByPlayer();
+			return this.getDeathsByPlayer();
 		} else if(arg0.equals("deathsByEnvironment")) {
-			return this.getKillsByEnvironment();
+			return this.getDeathsByEnvironment();
 		} else if(arg0.equals("deathsByNpe")) {
-			return this.getKillsByNpe();
+			return this.getDeathsByNpe();
 		} else if(arg0.equals("playersKilled")) {
 			return this.getPlayersKilled();
 		} else if(arg0.equals("npesKilled")) {
 			return this.getNpesKilled();
 		}
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute");
-	}
-
-	public int getTotalDeaths() {
-		return totalDeaths;
-	}
-
-	public void setTotalDeaths(int totalDeaths) {
-		this.totalDeaths = totalDeaths;
-	}
-	
-	public void incTotalDeaths() { 
-		incTotalDeaths(1) ; 
-	}
-	
-	public void incTotalDeaths(int increment) { 
-		this.totalDeaths+= increment ; 
-	}
-
-	public int getDeathsByPlayer() {
-		return deathsByPlayer;
-	}
-
-	public void setDeathsByPlayer(int deathsByPlayer) {
-		this.deathsByPlayer = deathsByPlayer;
-	}
-
-	public int getDeathsByEnvironment() {
-		return deathsByEnvironment;
-	}
-
-	public void setDeathsByEnvironment(int deathsByEnvironment) {
-		this.deathsByEnvironment = deathsByEnvironment;
-	}
-
-	public int getDeathsByNpe() {
-		return deathsByNpe;
-	}
-
-	public void setDeathsByNpe(int deathsByNpe) {
-		this.deathsByNpe = deathsByNpe;
 	}
 
 	@Override public AttributeList getAttributes(String[] arg0) {
@@ -222,11 +200,11 @@ public class NpeData implements DynamicMBean {
 		for(String s : datas) {
 			String[] keyval = s.split(":");
 			if(keyval[0].equals("deathsByPlayer")) {
-				entry.setKillsByPlayer(Integer.decode(keyval[1]));
+				entry.setDeathsByPlayer(Integer.decode(keyval[1]));
 			} else if(keyval[0].equals("deathsByEnvironment")) {
-				entry.setKillsByEnvironment(Integer.decode(keyval[1]));
+				entry.setDeathsByEnvironment(Integer.decode(keyval[1]));
 			} else if(keyval[0].equals("deathsByNpe")) {
-				entry.setKillsByNpe(Integer.decode(keyval[1]));
+				entry.setDeathsByNpe(Integer.decode(keyval[1]));
 			} else if(keyval[0].equals("playersKilled")) {
 				entry.setPlayersKilled(Integer.decode(keyval[1]));
 			}

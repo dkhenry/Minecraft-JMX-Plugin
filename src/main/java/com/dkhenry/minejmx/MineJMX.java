@@ -380,7 +380,7 @@ public class MineJMX extends JavaPlugin {
 		if(this.npeData.containsKey(type)) {
 			return this.npeData.get(type);
 		}
-		if(logIfNotFound.length() < 0) {
+		if(logIfNotFound.length() > 0) {
 			this.log.info(logIfNotFound);
 		}
 		npeData = new NpeData(this);
