@@ -27,8 +27,7 @@ public class ServerData implements DynamicMBean {
 	private long blocksSpread; /**< Done */
 	private long blocksDecayed; /**< Done */
 	private long itemsCrafted ;
-	private Map<String,Integer> mobsKilled ;/** Done */
-	private Map<String,Integer> mobsKilledEnviron; /**< In Progress */
+	private long npesKilled ;/** In progress */
 	private int playersKilled ; /** Done */
 	private long playTime ; /**< Done */
 	private int numberOfPlayers ; /**< Done */
@@ -39,12 +38,6 @@ public class ServerData implements DynamicMBean {
 
 	public ServerData(MineJMX plugin) {
 		this.plugin = plugin;
-		this.mobsKilled = new HashMap<String,Integer>();
-		this.mobsKilled.put("creeper", new Integer(0));
-		this.mobsKilled.put("spider", new Integer(0));
-		this.mobsKilled.put("zombie", new Integer(0));
-		this.mobsKilled.put("skeleton", new Integer(0));
-		this.mobsKilled.put("slime", new Integer(0));
 	}
 
 	// blocksPlaced {{{
@@ -75,31 +68,17 @@ public class ServerData implements DynamicMBean {
 	}
 	// }}}
 
-	// mobsKilled {{{
-	public Map<String,Integer> getMobsKilled() {
-		return mobsKilled;
+	// npesKilled {{{
+	public long getNpesKilled() {
+		return this.npesKilled;
 	}
 
-	public void setMobsKilled(Map<String,Integer> mobsKilled) {
-		this.mobsKilled = mobsKilled;
+	public void setNpesKilled(long npesKilled) {
+		this.npesKilled = npesKilled;
 	}
 
-	public void incMobsKilled(String type) {
-		this.mobsKilled.put(type, this.mobsKilled.get(type)+1)  ;
-	}
-	// }}}
-
-	// mobsKilledEnviron {{{
-	public Map<String,Integer> getMobsKilledEnviron() {
-		return this.mobsKilledEnviron;
-	}
-
-	public void setMobsKilledEnviron(Map<String,Integer> mobsKilledEnviron) {
-		this.mobsKilledEnviron = mobsKilledEnviron;
-	}
-
-	public void incMobsKilledEnviron(String type) {
-		this.mobsKilledEnviron.put(type, this.mobsKilledEnviron.get(type) + 1);
+	public void incNpesKilled() {
+		this.npesKilled++;
 	}
 	// }}}
 
@@ -236,33 +215,8 @@ public class ServerData implements DynamicMBean {
 			return getPlayersKilled() ;
 		} else if(arg0.equals("playTime")) {
 			return this.getFullPlayTime();
-		} else if(arg0.equals("mobsKilled")) {
-			return this.mobsKilled.get("creeper") + this.mobsKilled.get("skeleton") + this.mobsKilled.get("zombie") + this.mobsKilled.get("spider") + this.mobsKilled.get("slime");
-		} else if(arg0.equals("creepersKilled")) {
-			return this.mobsKilled.get("creeper") ;
-		} else if(arg0.equals("skeletonsKilled")) {
-			return this.mobsKilled.get("skeleton") ;
-		} else if(arg0.equals("zombiesKilled")) {
-			return this.mobsKilled.get("zombie") ;
-		} else if(arg0.equals("spidersKilled")) {
-			return this.mobsKilled.get("spider") ;
-		} else if(arg0.equals("slimesKilled")) {
-			return this.mobsKilled.get("slime");
-		} else if(arg0.equals("mobsKilledEnviron")) {
-			return
-				this.mobsKilledEnviron.get("creeper") +
-				this.mobsKilledEnviron.get("skeleton") +
-				this.mobsKilledEnviron.get("zombie") +
-				this.mobsKilledEnviron.get("spider") +
-				this.mobsKilledEnviron.get("slime");
-		} else if(arg0.equals("creepersKilledEnviron")) {
-			return this.mobsKilledEnviron.get("creeper");
-		} else if(arg0.equals("skeletonsKilledEnviron")) {
-			return this.mobsKilledEnviron.get("skeleton");
-		} else if(arg0.equals("zombiesKilledEnviron")) {
-			return this.mobsKilledEnviron.get("zombie");
-		} else if(arg0.equals("spidersKilledEnviron")) {
-			return this.mobsKilledEnviron.get("spider");
+		} else if(arg0.equals("npesKilled")) {
+			return this.getNpesKilled();
 		} else if(arg0.equals("numberOfPlayers")) {
 			return this.getNumberOfPlayers() ;
 		} else if(arg0.equals("playerDistanceMoved")) {
@@ -291,7 +245,7 @@ public class ServerData implements DynamicMBean {
 	@Override
 	public MBeanInfo getMBeanInfo() {
 		OpenMBeanInfoSupport info;
-		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[21];
+		OpenMBeanAttributeInfoSupport[] attributes = new OpenMBeanAttributeInfoSupport[10];
 
 		//Build the Attributes
 		attributes[0] = new OpenMBeanAttributeInfoSupport("blocksPlaced","Number of Blocks Placed",SimpleType.LONG, true, false,false);
@@ -301,20 +255,9 @@ public class ServerData implements DynamicMBean {
 		attributes[4] = new OpenMBeanAttributeInfoSupport("itemsCrafted","Number of items Crafted",SimpleType.LONG, true, false,false);
 		attributes[5] = new OpenMBeanAttributeInfoSupport("playersKilled","Number Of Players Killed",SimpleType.INTEGER, true, false,false);
 		attributes[6] = new OpenMBeanAttributeInfoSupport("playTime","Amount Of Time People have played on this Server",SimpleType.LONG, true, false,false);
-		attributes[7] = new OpenMBeanAttributeInfoSupport("mobsKilled","Number Of Mobs Killed",SimpleType.INTEGER, true, false,false);
-		attributes[8] = new OpenMBeanAttributeInfoSupport("creepersKilled","Number of Creepers Killed",SimpleType.INTEGER, true, false,false);
-		attributes[9] = new OpenMBeanAttributeInfoSupport("skeletonsKilled","Number of Skeletons Killed",SimpleType.INTEGER, true, false,false);
-		attributes[10] = new OpenMBeanAttributeInfoSupport("zombiesKilled","Number of Zombies Killed",SimpleType.INTEGER, true, false,false);
-		attributes[11] = new OpenMBeanAttributeInfoSupport("spidersKilled","Number of Spiders Killed",SimpleType.INTEGER, true, false,false);
-		attributes[12] = new OpenMBeanAttributeInfoSupport("slimesKilled","Number of Slime Killed",SimpleType.INTEGER, true, false,false);
-		attributes[13] = new OpenMBeanAttributeInfoSupport("mobsKilledEnviron","Number of mobs killed environmentally",SimpleType.INTEGER, true, false,false);
-		attributes[14] = new OpenMBeanAttributeInfoSupport("creepersKilledEnviron","Number of creepers killed environmentally",SimpleType.INTEGER, true, false,false);
-		attributes[15] = new OpenMBeanAttributeInfoSupport("skeletonsKilledEnviron","Number of skeletons killed environmentally",SimpleType.INTEGER, true, false,false);
-		attributes[16] = new OpenMBeanAttributeInfoSupport("zombiesKilledEnviron","Number of zombies killed environmentally",SimpleType.INTEGER, true, false,false);
-		attributes[17] = new OpenMBeanAttributeInfoSupport("spidersKilledEnviron","Number of spiders killed environmentally",SimpleType.INTEGER, true, false,false);
-		attributes[18] = new OpenMBeanAttributeInfoSupport("slimesKilledEnviron","Number of slimes killed environmentally",SimpleType.INTEGER, true, false,false);
-		attributes[19] = new OpenMBeanAttributeInfoSupport("numberOfPlayers","Number of Players On Server",SimpleType.INTEGER, true, false,false);
-		attributes[20] = new OpenMBeanAttributeInfoSupport("playerDistanceMoved", "Total player distance traveled", SimpleType.DOUBLE, true, false, false);
+		attributes[7] = new OpenMBeanAttributeInfoSupport("npesKilled","Number of non-Player Entities killed",SimpleType.INTEGER, true, false, false);
+		attributes[8] = new OpenMBeanAttributeInfoSupport("numberOfPlayers","Number of Players On Server",SimpleType.INTEGER, true, false,false);
+		attributes[9] = new OpenMBeanAttributeInfoSupport("playerDistanceMoved", "Total player distance traveled", SimpleType.DOUBLE, true, false, false);
 
 		//Build the info
 		info = new OpenMBeanInfoSupport(this.getClass().getName(),
@@ -343,9 +286,6 @@ public class ServerData implements DynamicMBean {
 
 	public String getMetricData() {
 		String rvalue = "" ;
-		for(Entry<String, Integer> entity : this.mobsKilled.entrySet()) {
-			rvalue += ","+entity.getKey()+":"+entity.getValue() ;
-		}
 		return "playTime:"+this.playTime+
 				",numberOfPlayers:"+this.numberOfPlayers+
 				",blocksPlaced:"+this.blocksPlaced+
@@ -353,7 +293,8 @@ public class ServerData implements DynamicMBean {
 				",blocksSpread:"+this.blocksSpread+
 				",blocksDecayed:"+this.blocksDecayed+
 				",itemsCrafted:"+this.itemsCrafted+
-				",playersKilled:"+this.playersKilled ;
+				",playersKilled:"+this.playersKilled +
+				",npesKilled:" + this.npesKilled;
 	}
 
 	public static ServerData instanceFromResultSet(ResultSet rs, MineJMX plugin) throws SQLException {
@@ -381,8 +322,8 @@ public class ServerData implements DynamicMBean {
 				sd.setItemsCrafted(Integer.decode(keyval[1])) ;
 			} else if( keyval[0].equals("playersKilled") ) {
 				sd.setPlayersKilled(Integer.decode(keyval[1])) ;
-			} else {
-				sd.getMobsKilled().put(keyval[0], Integer.decode(keyval[1])) ;
+			} else if(keyval[0].equals("npesKilled")) {
+				sd.setNpesKilled(Integer.decode(keyval[1]));
 			}
 		}
 		return sd ;

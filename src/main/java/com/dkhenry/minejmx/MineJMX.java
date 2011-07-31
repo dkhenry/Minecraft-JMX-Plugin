@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.Class;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -59,6 +60,7 @@ public class MineJMX extends JavaPlugin {
 	public ServerPerformanceData serverPerformanceData ; 
 	public Map<String,PlayerData> playerData ;
 	public Map<String,BlockData> blockData ;
+	public Map<String,NpeData> npeData;
 
 	/* The Configure variables */
 	private String username = "admin" ;
@@ -151,12 +153,13 @@ public class MineJMX extends JavaPlugin {
 				} else if(rs.getString("type").equals("player")) {
 					PlayerData pd = PlayerData.instanceFromResultSet(rs, this) ;
 					this.addPlayer(rs.getString("key"), pd) ;
-					this.playerData.put(rs.getString("key"), pd) ;
-				}else if(rs.getString("type").equals("block")) {
+				} else if(rs.getString("type").equals("block")) {
 					BlockData bd = BlockData.instanceFromResultSet(rs, this) ;
 					this.addBlock(rs.getString("key"), bd) ;
-					this.blockData.put(rs.getString("key"), bd) ;
-				} else if(rs.getString("type").equals("preformance")) {
+				} else if(rs.getString("type").equals("npe")) {
+					NpeData nd = NpeDate.instanceFromResultSet(rs, this);
+					this.addNpe(rs.getString("key"), nd);
+				} else if(rs.getString("type").equals("performance")) {
 					this.serverPerformanceData = ServerPerformanceData.instanceFromResultSet(rs, this) ;					
 				}
 			}
@@ -185,6 +188,11 @@ public class MineJMX extends JavaPlugin {
 				PlayerData d = entry.getValue() ;
 				log.info("Saving: "+entry.getKey()+" : "+d.getMetricData()) ;
 				stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('"+entry.getKey()+"', 'player' , '"+d.getMetricData()+"') ;") ;
+			}
+			for(Entry<String, NpeData> entry : this.npeData.entrySet()) {
+				NpeData d = entry.getValue();
+				log.info("Saving: " + entry.getKey() + " : " + d.getMetricData());
+				stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('" + entry.getKey() + "', 'npe', '" + d.getMetricData() + "');");
 			}
 			log.info("Saving: this : server : "+this.serverData.getMetricData()) ;
 			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"') ;") ;
@@ -311,7 +319,50 @@ public class MineJMX extends JavaPlugin {
 		this.blockData.put(name, blockData) ;
 	}
 
-	public BlockData getBlockData(String mat, String logIfNotFound ) {
+	public void addNpe(String className, NpeData data) {
+		String name = className;
+		if(data == null) {
+			data = new NpeData(this);
+		}
+		// Register the MBean
+		ObjectName oName;
+		try {
+			oName = new ObjectName("org.dkhenry.minejmx:type=NpeData,name=" + name);
+			if( mbs.isRegistered(oName) ) {
+				mbs.unregisterMBean(oName) ;
+			}
+			mbs.registerMBean(data, oName) ;
+		} catch (InstanceAlreadyExistsException e) {
+			//e.printStackTrace();
+		} catch (MBeanRegistrationException e) {
+			//e.printStackTrace();
+		} catch (NotCompliantMBeanException e) {
+			//e.printStackTrace();
+		} catch (MalformedObjectNameException e) {
+			//e.printStackTrace();
+		} catch (NullPointerException e) {
+			//e.printStackTrace();
+		} catch (InstanceNotFoundException e) {
+			//e.printStackTrace();
+		}
+
+		this.npeData.put(name, data) ;
+	}
+
+	public PlayerData getPlayerData(String name, String logIfNotFound) {
+		PlayerData playerData;
+		if(this.playerData.containsKey(name)) {
+			return this.playerData.get(name);
+		}
+		if(logIfNotFound.length() > 0) {
+			this.log.info(logIfNotFound);
+		}
+		playerData = new PlayerData(this);
+		this.addPlayer(name, playerData);
+		return playerData;
+	}
+
+	public BlockData getBlockData(String mat, String logIfNotFound) {
 		BlockData blockData;
 		if(this.blockData.containsKey(mat)) {
 			return this.blockData.get(mat);
@@ -324,17 +375,22 @@ public class MineJMX extends JavaPlugin {
 		return blockData;
 	}
 
-	public PlayerData getPlayerData(String name, String logIfNotFound ) {
-		PlayerData playerData;
-		if(this.playerData.containsKey(name)) {
-			return this.playerData.get(name);
+	public NpeData getNpeData(String type, String logIfNotFound) {
+		NpeData npeData;
+		if(this.npeData.containsKey(type)) {
+			return this.npeData.get(type);
 		}
-		if(logIfNotFound.length() > 0) {
+		if(logIfNotFound.length() . 0) {
 			this.log.info(logIfNotFound);
 		}
-		playerData = new PlayerData(this);
-		this.addPlayer(name, playerData);
-		return playerData;
+		npeData = new NpeData(this);
+		this.addNpe(type, npeData);
+		return npeData;
+	}
+
+	public NpeData getNpeDataByClass(Class that) {
+		String name = MineJMX.getSimpleClassName(that);
+		return this.getNpeData(name, "MineJMX is seeing non-player Entity type \"" + name + "\" for the first time.");
 	}
 
 	@Override
@@ -358,9 +414,10 @@ public class MineJMX extends JavaPlugin {
 		/* Do the Magic to Enable JMX  */
 		enableJMX() ;
 
-		playerData = new HashMap<String,PlayerData>() ;
-		blockData = new HashMap<String,BlockData>() ;
-		serverData = new ServerData(this);
+		this.serverData = new ServerData(this);
+		this.playerData = new HashMap<String,PlayerData>() ;
+		this.blockData = new HashMap<String,BlockData>() ;
+		this.npeData = new HashMap<String,NpeData>();
 
 		loadState() ;
 
@@ -409,5 +466,11 @@ public class MineJMX extends JavaPlugin {
 		log.info("The MineJMX Plugin has been enabled.") ;
 	}
 
-
+	public static String getSimpleClassName(Class cls) {
+		String name = cls.getName().replace('$', '.');
+		if(name.lastIndexOf('.') > 0) {
+			name = name.substring(name.lastIndexOf('.') + 1);
+		}
+	}
 }
+

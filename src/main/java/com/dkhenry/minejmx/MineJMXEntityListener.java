@@ -1,12 +1,7 @@
 package com.dkhenry.minejmx;
 
-import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Spider;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -20,74 +15,84 @@ public class MineJMXEntityListener extends EntityListener {
 		plugin = instance ;
 	}
 
-	@Override public void onEntityDeath(EntityDeathEvent event) {
-		Entity subject = event.getEntity() ;
-		// If a player Died we Increment His deaths and carry on
-		if( subject instanceof Player ) {
-			// Increment The Per Player Stats
-			Player player = (Player) subject ;
-			PlayerData playerData = null ;
-			if(plugin.playerData.containsKey(player.getName())) {
-				playerData = plugin.playerData.get(player.getName()) ;
+	private void handlePlayerDeath(Player subject) {
+		EntityDamageEvent cause = subject.getLastDamageCause();
+
+		// Increment the PlayerData total death stat
+		PlayerData playerData = this.plugin.getPlayerData(subject.getName(), "MineJMX found a new Player");
+		playerData.incDeaths();
+
+		// Increment the ServerData statistics
+		plugin.serverData.incPlayersKilled();
+
+		if(cause instanceof EntityDamageByEntityEvent) {
+			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager();
+			if(predicate instanceof Player) {
+				// The player was killed by another player, dick move bro
+				PlayerData killerData = this.plugin.getPlayerData(((Player)predicate).getName());
+				killerData.incPlayersKilled();
+
+				// Increment the victim's PvP death stat
+				playerData.incDeathsByPlayer();
 			} else {
-				plugin.log.info("MineJMX Found a new first time Player") ;
-				playerData = new PlayerData(plugin) ;
-				plugin.addPlayer(player.getName(),playerData) ;
-			}
-			playerData.incDeaths() ;
+				// The player was killed by a mob, increment the NpeData statistics
+				NpeData killerData = this.plugin.getNpeDataByClass(predicate.getClass());
+				npeData.incPlayersKilled();
 
-			// Increment The Server Stats
-			plugin.serverData.incPlayersKilled() ;
-			return;
-		}
-
-		// So This wasn't a Player Dieing but a mob Dieing. Lets find who doneit and reward them for their accomplishments
-		EntityDamageEvent cause = subject.getLastDamageCause() ;
-		if( cause instanceof EntityDamageByEntityEvent ) {
-			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager() ;
-			if( predicate instanceof Player ) {
-				Player player = (Player) predicate ;
-
-				// Increment The Per Player Stats
-				PlayerData playerData = null ;
-				if(plugin.playerData.containsKey(player.getName())) {
-					playerData = plugin.playerData.get(player.getName()) ;
-				} else {
-					plugin.log.info("MineJMX Found a new first time Player") ;
-					playerData = new PlayerData(plugin) ;
-					plugin.addPlayer(player.getName(),playerData) ;
-					return ;
-				}
-
-				// Find out  What kind of Monster it was
-				if( subject instanceof Creeper) {
-					playerData.incMobsKilled("creeper") ;
-					plugin.serverData.incMobsKilled("creeper") ;
-				} else if (subject instanceof Skeleton ) {
-					playerData.incMobsKilled("skeleton") ;
-					plugin.serverData.incMobsKilled("skeleton") ;
-				} else if (subject instanceof Zombie ) {
-					playerData.incMobsKilled("zombie") ;
-					plugin.serverData.incMobsKilled("zombie") ;
-				} else if (subject instanceof Spider ) {
-					playerData.incMobsKilled("spider") ;
-					plugin.serverData.incMobsKilled("spider") ;
-				} else if(subject instanceof Slime) {
-					playerData.incMobsKilled("slime");
-					plugin.serverData.incMobsKilled("slime");
-				}
+				// Increment the victim's death by NPE stat
+				playerData.incDeathsByNpe();
 			}
 		} else if(cause instanceof EntityDamageByBlockEvent) {
-			// it was killed environmentally; let's increment the appropriate counter for this mob type
-			if(subject instanceof Creeper) {
-				plugin.serverData.incMobsKilledEnviron("creeper");
-			} else if(subject instanceof Skeleton) {
-				plugin.serverData.incMobsKilledEnviron("skeleton");
-			} else if(subject instanceof Zombie) {
-				plugin.serverData.incMobsKilledEnviron("zombie");
-			} else if(subject instanceof Spider) {
-				plugin.serverData.incMobsKilledEnviron("spider");
+			// drowned, burned, fell, got stabbed by cactus, etc...increment the environmental death counter
+			playerData.incDeathsByEnvironment();
+		}
+	}
+
+	private void handleNpeDeath(Entity subject) {
+		EntityDamageEvent cause = subject.getLastDamageCause();
+
+		// Increment the NPE's total death stat
+		NpeData npeData = this.plugin.getNpeDataByClass(subject.getClass());
+		npeData.incTotalDeaths();
+
+		// Increment the ServerData statistics
+		plugin.serverData.incMobsKilled();
+
+		if(cause instanceof EntityDamageByEntityEvent) {
+			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager();
+			if(predicate instanceof Player) {
+				// The NPE was killed by a player, reward them for their accomplishments
+				PlayerData killerData = this.plugin.getPlayerData(((Player)predicate).getName());
+				String mobName = this.plugin.getSimpleClassName(subject.getClass()).toLowerCase();
+				if(killerData.getMobsKilled().containsKey(mobName)) {
+					killerData.incMobsKilled(mobName);
+				} else {
+					plugin.log.debug("MineJMX: A player killed an unknown mob type (\"" + mobType + "\")");
+				}
+
+				// and increment the NPE's specific death stat
+				npeData.incKillsByPlayer();
+			} else {
+				// The NPE was killed by another mob, increment NpeData statistics again
+				NpeData killerData = this.plugin.getNpeDataDataByClass(predicate.getClass());
+				killerData.incNpesKilled();
+
+				// and increment the original NPE's specific death stat
+				npeData.incKillsByNpe();
 			}
+		} else if(cause instanceof EntityDamageByBlockEvent) {
+			// killed by environment, increment the specific death counter
+			npeData.incKillsByEnvironment();
+		}
+	}
+
+	@Override public void onEntityDeath(EntityDeathEvent event) {
+		Entity subject = event.getEntity(), predicate;
+
+		if(subject instanceof Player) {
+			this.handlePlayerDeath((Player)subject);
+		} else {
+			this.handleNpeDeath(subject);
 		}
 	}
 }
