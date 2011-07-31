@@ -452,7 +452,7 @@ public class PlayerData implements DynamicMBean {
 			} else if( keyval[0].equals("active") ) {
 				// Don't Set Player Active
 			} else if(keyval[0].equals("distanceMoved")) {
-				pd.setDistanceMoved(Double.decode(keyval[1]));
+				pd.setDistanceMoved(Double.parseDouble(keyval[1]));
 			} else if(keyval[0].equals("deathsByPlayer")) {
 				pd.setDeathsByPlayer(Integer.decode(keyval[1]));
 			} else if(keyval[0].equals("deathsByEnvironment")) {

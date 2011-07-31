@@ -85,6 +85,7 @@ public class NpeData implements DynamicMBean {
 	public void incPlayersKilled() {
 		this.playersKilled++;
 	}
+	
 	// }}}
 
 	// npesKilled {{{
@@ -102,7 +103,7 @@ public class NpeData implements DynamicMBean {
 	// }}}
 
 	@Override public Object getAttribute(String arg0) throws AttributeNotFoundException, MBeanException, ReflectionException {
-		if(arg0.equals("totalDeaths") {
+		if(arg0.equals("totalDeaths")) {
 			return this.getTotalDeaths();
 		} else if(arg0.equals("deathsByPlayer")) {
 			return this.getKillsByPlayer();
@@ -116,6 +117,46 @@ public class NpeData implements DynamicMBean {
 			return this.getNpesKilled();
 		}
 		throw new AttributeNotFoundException("Cannot find " + arg0 + " attribute");
+	}
+
+	public int getTotalDeaths() {
+		return totalDeaths;
+	}
+
+	public void setTotalDeaths(int totalDeaths) {
+		this.totalDeaths = totalDeaths;
+	}
+	
+	public void incTotalDeaths() { 
+		incTotalDeaths(1) ; 
+	}
+	
+	public void incTotalDeaths(int increment) { 
+		this.totalDeaths+= increment ; 
+	}
+
+	public int getDeathsByPlayer() {
+		return deathsByPlayer;
+	}
+
+	public void setDeathsByPlayer(int deathsByPlayer) {
+		this.deathsByPlayer = deathsByPlayer;
+	}
+
+	public int getDeathsByEnvironment() {
+		return deathsByEnvironment;
+	}
+
+	public void setDeathsByEnvironment(int deathsByEnvironment) {
+		this.deathsByEnvironment = deathsByEnvironment;
+	}
+
+	public int getDeathsByNpe() {
+		return deathsByNpe;
+	}
+
+	public void setDeathsByNpe(int deathsByNpe) {
+		this.deathsByNpe = deathsByNpe;
 	}
 
 	@Override public AttributeList getAttributes(String[] arg0) {

@@ -184,6 +184,7 @@ public class ServerData implements DynamicMBean {
 	}
 	// }}}
 
+	@SuppressWarnings("rawtypes")
 	public long getFullPlayTime() {
 		long activePlayTime = 0;
 

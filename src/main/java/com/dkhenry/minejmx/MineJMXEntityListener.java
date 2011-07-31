@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 
 public class MineJMXEntityListener extends EntityListener {
-	private static MineJMX plugin ;
+	private MineJMX plugin ;
 
 	public MineJMXEntityListener(MineJMX instance) {
 		plugin = instance ;
@@ -29,7 +29,7 @@ public class MineJMXEntityListener extends EntityListener {
 			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager();
 			if(predicate instanceof Player) {
 				// The player was killed by another player, dick move bro
-				PlayerData killerData = this.plugin.getPlayerData(((Player)predicate).getName());
+				PlayerData killerData = this.plugin.getPlayerData(((Player)predicate).getName(),"");
 				killerData.incPlayersKilled();
 
 				// Increment the victim's PvP death stat
@@ -37,7 +37,7 @@ public class MineJMXEntityListener extends EntityListener {
 			} else {
 				// The player was killed by a mob, increment the NpeData statistics
 				NpeData killerData = this.plugin.getNpeDataByClass(predicate.getClass());
-				npeData.incPlayersKilled();
+				killerData.incPlayersKilled();
 
 				// Increment the victim's death by NPE stat
 				playerData.incDeathsByNpe();
@@ -56,25 +56,25 @@ public class MineJMXEntityListener extends EntityListener {
 		npeData.incTotalDeaths();
 
 		// Increment the ServerData statistics
-		plugin.serverData.incMobsKilled();
+		//plugin.serverData.incMobsKilled();
 
 		if(cause instanceof EntityDamageByEntityEvent) {
 			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager();
 			if(predicate instanceof Player) {
 				// The NPE was killed by a player, reward them for their accomplishments
-				PlayerData killerData = this.plugin.getPlayerData(((Player)predicate).getName());
+				PlayerData killerData = this.plugin.getPlayerData(((Player)predicate).getName(),"");
 				String mobName = this.plugin.getSimpleClassName(subject.getClass()).toLowerCase();
 				if(killerData.getMobsKilled().containsKey(mobName)) {
 					killerData.incMobsKilled(mobName);
 				} else {
-					plugin.log.debug("MineJMX: A player killed an unknown mob type (\"" + mobType + "\")");
+					plugin.log.info("MineJMX: A player killed an unknown mob type (\"" + mobName + "\")");
 				}
 
 				// and increment the NPE's specific death stat
 				npeData.incKillsByPlayer();
 			} else {
 				// The NPE was killed by another mob, increment NpeData statistics again
-				NpeData killerData = this.plugin.getNpeDataDataByClass(predicate.getClass());
+				NpeData killerData = this.plugin.getNpeDataByClass(predicate.getClass());
 				killerData.incNpesKilled();
 
 				// and increment the original NPE's specific death stat

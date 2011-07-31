@@ -157,7 +157,7 @@ public class MineJMX extends JavaPlugin {
 					BlockData bd = BlockData.instanceFromResultSet(rs, this) ;
 					this.addBlock(rs.getString("key"), bd) ;
 				} else if(rs.getString("type").equals("npe")) {
-					NpeData nd = NpeDate.instanceFromResultSet(rs, this);
+					NpeData nd = NpeData.instanceFromResultSet(rs, this);
 					this.addNpe(rs.getString("key"), nd);
 				} else if(rs.getString("type").equals("performance")) {
 					this.serverPerformanceData = ServerPerformanceData.instanceFromResultSet(rs, this) ;					
@@ -380,7 +380,7 @@ public class MineJMX extends JavaPlugin {
 		if(this.npeData.containsKey(type)) {
 			return this.npeData.get(type);
 		}
-		if(logIfNotFound.length() . 0) {
+		if(logIfNotFound.length() < 0) {
 			this.log.info(logIfNotFound);
 		}
 		npeData = new NpeData(this);
@@ -471,6 +471,7 @@ public class MineJMX extends JavaPlugin {
 		if(name.lastIndexOf('.') > 0) {
 			name = name.substring(name.lastIndexOf('.') + 1);
 		}
+		return name ;
 	}
 }
 
