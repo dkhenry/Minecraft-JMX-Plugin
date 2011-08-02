@@ -64,6 +64,12 @@ public class MineJMXEntityListener extends EntityListener {
 				// The NPE was killed by a player, reward them for their accomplishments
 				PlayerData killerData = this.plugin.getPlayerData(((Player)predicate).getName(),"");
 				String mobName = this.plugin.getSimpleClassName(subject.getClass()).toLowerCase();
+
+				if(mobName.startsWith("craft")) {
+					// it looks like a lot of the class names follow the format "CraftX", such as "CraftWolf" or "CraftCreeper"
+					mobName = mobName.substring(5);
+				}
+
 				if(killerData.getMobsKilled().containsKey(mobName)) {
 					killerData.incMobsKilled(mobName);
 				} else {

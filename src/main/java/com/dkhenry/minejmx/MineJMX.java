@@ -390,6 +390,9 @@ public class MineJMX extends JavaPlugin {
 
 	public NpeData getNpeDataByClass(Class that) {
 		String name = MineJMX.getSimpleClassName(that);
+		if(name.startsWith("Craft")) {
+			name = name.substring(5);
+		}
 		return this.getNpeData(name, "MineJMX is seeing non-player Entity type \"" + name + "\" for the first time.");
 	}
 
