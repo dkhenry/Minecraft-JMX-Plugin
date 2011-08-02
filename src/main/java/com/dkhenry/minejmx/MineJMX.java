@@ -454,6 +454,7 @@ public class MineJMX extends JavaPlugin {
 		// Player Events
 		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal ,this) ;
 		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal ,this) ;
+		pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Event.Priority.Normal, this);
 
 		// Entity Events
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal ,this) ;
