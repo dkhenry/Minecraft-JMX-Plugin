@@ -48,7 +48,8 @@ public class MineJMXPlayerListener extends PlayerListener {
 		plugin.serverData.incPlayTimeBy(playerLoggedInTime);
 	}
 
-	@Override public void onPlayerMove(PlayerMoveEvent event) {
+	@Override
+	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Location from = event.getFrom(), to = event.getTo();
 		double distance = Math.sqrt(Math.pow(to.getX() - from.getX(), 2) + Math.pow(to.getY() - from.getY(), 2) + Math.pow(to.getZ() - from.getZ(), 2));

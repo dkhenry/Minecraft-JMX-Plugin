@@ -56,7 +56,7 @@ public class MineJMXEntityListener extends EntityListener {
 		npeData.incTotalDeaths();
 
 		// Increment the ServerData statistics
-		//plugin.serverData.incMobsKilled();
+		plugin.serverData.incNpesKilled() ;
 
 		if(cause instanceof EntityDamageByEntityEvent) {
 			Entity predicate = ((EntityDamageByEntityEvent)cause).getDamager();
@@ -71,18 +71,18 @@ public class MineJMXEntityListener extends EntityListener {
 				}
 
 				// and increment the NPE's specific death stat
-				npeData.incKillsByPlayer();
+				npeData.incDeathsByPlayer();
 			} else {
 				// The NPE was killed by another mob, increment NpeData statistics again
 				NpeData killerData = this.plugin.getNpeDataByClass(predicate.getClass());
 				killerData.incNpesKilled();
 
 				// and increment the original NPE's specific death stat
-				npeData.incKillsByNpe();
+				npeData.incDeathsByNpe();
 			}
 		} else if(cause instanceof EntityDamageByBlockEvent) {
 			// killed by environment, increment the specific death counter
-			npeData.incKillsByEnvironment();
+			npeData.incDeathsByEnvironment();
 		}
 	}
 
