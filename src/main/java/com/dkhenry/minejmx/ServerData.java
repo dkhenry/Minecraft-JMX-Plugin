@@ -288,14 +288,14 @@ public class ServerData implements DynamicMBean {
 	public String getMetricData() {
 		String rvalue = "" ;
 		return "playTime:"+this.playTime+
-				",numberOfPlayers:"+this.numberOfPlayers+
 				",blocksPlaced:"+this.blocksPlaced+
 				",blocksDestroyed:"+this.blocksDestroyed+
 				",blocksSpread:"+this.blocksSpread+
 				",blocksDecayed:"+this.blocksDecayed+
 				",itemsCrafted:"+this.itemsCrafted+
 				",playersKilled:"+this.playersKilled +
-				",npesKilled:" + this.npesKilled;
+				",npesKilled:" + this.npesKilled +
+				",playerDistanceMoved:" + this.playerDistanceMoved;
 	}
 
 	public static ServerData instanceFromResultSet(ResultSet rs, MineJMX plugin) throws SQLException {
@@ -309,8 +309,6 @@ public class ServerData implements DynamicMBean {
 			String[] keyval = s.split(":") ;
 			if( keyval[0].equals("playTime") ) {
 				sd.setPlayTime(Integer.decode(keyval[1])) ;
-			} else if( keyval[0].equals("numberOfPlayers") ) {
-				sd.setNumberOfPlayers(Integer.decode(keyval[1])) ;
 			} else if( keyval[0].equals("blocksPlaced") ) {
 				sd.setBlocksPlaced(Integer.decode(keyval[1])) ;
 			} else if( keyval[0].equals("blocksDestroyed") ) {
@@ -325,6 +323,8 @@ public class ServerData implements DynamicMBean {
 				sd.setPlayersKilled(Integer.decode(keyval[1])) ;
 			} else if(keyval[0].equals("npesKilled")) {
 				sd.setNpesKilled(Integer.decode(keyval[1]));
+			} else if(keyval[0].equals("playerDistanceMoved")) {
+				sd.setPlayerDistanceMoved(Double.parseDouble(keyval[1]));
 			}
 		}
 		return sd ;
