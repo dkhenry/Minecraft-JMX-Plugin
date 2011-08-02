@@ -57,7 +57,7 @@ public class MineJMX extends JavaPlugin {
 
 	/* The MBeans and their containers */
 	public ServerData serverData ;
-	public ServerPerformanceData serverPerformanceData ; 
+	public ServerPerformanceData serverPerformanceData ;
 	public Map<String,PlayerData> playerData ;
 	public Map<String,BlockData> blockData ;
 	public Map<String,NpeData> npeData;
@@ -160,7 +160,7 @@ public class MineJMX extends JavaPlugin {
 					NpeData nd = NpeData.instanceFromResultSet(rs, this);
 					this.addNpe(rs.getString("key"), nd);
 				} else if(rs.getString("type").equals("performance")) {
-					this.serverPerformanceData = ServerPerformanceData.instanceFromResultSet(rs, this) ;					
+					this.serverPerformanceData = ServerPerformanceData.instanceFromResultSet(rs, this) ;
 				}
 			}
 			rs.close();
@@ -196,7 +196,7 @@ public class MineJMX extends JavaPlugin {
 			}
 			log.info("Saving: this : server : "+this.serverData.getMetricData()) ;
 			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'server' , '"+this.serverData.getMetricData()+"') ;") ;
-			
+
 			stat.executeUpdate("INSERT OR REPLACE INTO metrics VALUES ('this' , 'performance' , '"+this.serverPerformanceData.getMetricData()+"') ;") ;
 
 			rs.close();
@@ -415,6 +415,7 @@ public class MineJMX extends JavaPlugin {
 		enableJMX() ;
 
 		this.serverData = new ServerData(this);
+		this.serverPerformanceData = new ServerPerformanceData(this) ;
 		this.playerData = new HashMap<String,PlayerData>() ;
 		this.blockData = new HashMap<String,BlockData>() ;
 		this.npeData = new HashMap<String,NpeData>();
@@ -461,8 +462,8 @@ public class MineJMX extends JavaPlugin {
 
 		// Server Events
 		this.tickPoller = new ServerTickPoller(this) ;
-		this.tickPoller.setInterval(40) ; 
-		this.tickPoller.registerWithScheduler(getServer().getScheduler()) ; 
+		this.tickPoller.setInterval(40) ;
+		this.tickPoller.registerWithScheduler(getServer().getScheduler()) ;
 
 		log.info("The MineJMX Plugin has been enabled.") ;
 	}
