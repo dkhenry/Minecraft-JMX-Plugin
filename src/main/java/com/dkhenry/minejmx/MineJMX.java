@@ -430,6 +430,12 @@ public class MineJMX extends JavaPlugin {
 				mbs.unregisterMBean(name) ;
 			}
 			mbs.registerMBean(serverData, name) ;
+
+			name = new ObjectName("org.dkhenry.minejmx:type=ServerPerformanceData,name="+serverName) ;
+			if (mbs.isRegistered(name) ) {
+				mbs.unregisterMBean(name) ;
+			}
+			mbs.registerMBean(serverPerformanceData, name) ;
 		} catch (MalformedObjectNameException e1) {
 			//e1.printStackTrace();
 		} catch (NullPointerException e1) {
