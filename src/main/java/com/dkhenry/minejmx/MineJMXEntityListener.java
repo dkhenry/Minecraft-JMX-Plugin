@@ -43,8 +43,22 @@ public class MineJMXEntityListener extends EntityListener {
 				playerData.incDeathsByNpe();
 			}
 		} else if(cause instanceof EntityDamageByBlockEvent) {
-			// drowned, burned, fell, got stabbed by cactus, etc...increment the environmental death counter
+			// as it turns out this is only valid for cacti/lava...it might be 
+			//    completely obsolete in favor of the following switch statement,
+			//    but I'm going to leave it in for the time being just in case
 			playerData.incDeathsByEnvironment();
+		} else {
+			// drowned, burned, fell, etc...increment the environmental death counter
+			switch(cause.getCause()) {
+				case EntityDamageEvent.DamageCause.FALL:
+				case EntityDamageEvent.DamageCause.DROWNING:
+				case EntityDamageEvent.DamageCause.LAVA:
+				case EntityDamageEvent.DamageCause.FIRE:
+				case EntityDamageEvent.DamageCause.FIRE_TICK:
+				case EntityDamageEvent.DamageCause.LIGHTNING:
+					playerData.incDeathsByEnvironment();
+					break;
+			}
 		}
 	}
 
@@ -89,6 +103,18 @@ public class MineJMXEntityListener extends EntityListener {
 		} else if(cause instanceof EntityDamageByBlockEvent) {
 			// killed by environment, increment the specific death counter
 			npeData.incDeathsByEnvironment();
+		} else {
+			// drowned, burned, fell, etc...increment the environmental death counter
+			switch(cause.getCause()) {
+				case EntityDamageEvent.DamageCause.FALL:
+				case EntityDamageEvent.DamageCause.DROWNING:
+				case EntityDamageEvent.DamageCause.LAVA:
+				case EntityDamageEvent.DamageCause.FIRE:
+				case EntityDamageEvent.DamageCause.FIRE_TICK:
+				case EntityDamageEvent.DamageCause.LIGHTNING:
+					npeData.incDeathsByEnvironment();
+					break;
+			}
 		}
 	}
 
