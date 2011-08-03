@@ -50,11 +50,12 @@ public class MineJMXEntityListener extends EntityListener {
 		} else {
 			// drowned, burned, fell, etc...increment the environmental death counter
 			switch(cause.getCause()) {
-				case EntityDamageEvent.DamageCause.FALL:
+				case EntityDamageEvent.DamageCause.CONTACT:
 				case EntityDamageEvent.DamageCause.DROWNING:
-				case EntityDamageEvent.DamageCause.LAVA:
+				case EntityDamageEvent.DamageCause.FALL:
 				case EntityDamageEvent.DamageCause.FIRE:
 				case EntityDamageEvent.DamageCause.FIRE_TICK:
+				case EntityDamageEvent.DamageCause.LAVA:
 				case EntityDamageEvent.DamageCause.LIGHTNING:
 					playerData.incDeathsByEnvironment();
 					break;
@@ -106,11 +107,12 @@ public class MineJMXEntityListener extends EntityListener {
 		} else {
 			// drowned, burned, fell, etc...increment the environmental death counter
 			switch(cause.getCause()) {
-				case EntityDamageEvent.DamageCause.FALL:
+				case EntityDamageEvent.DamageCause.CONTACT:
 				case EntityDamageEvent.DamageCause.DROWNING:
-				case EntityDamageEvent.DamageCause.LAVA:
+				case EntityDamageEvent.DamageCause.FALL:
 				case EntityDamageEvent.DamageCause.FIRE:
 				case EntityDamageEvent.DamageCause.FIRE_TICK:
+				case EntityDamageEvent.DamageCause.LAVA:
 				case EntityDamageEvent.DamageCause.LIGHTNING:
 					npeData.incDeathsByEnvironment();
 					break;
