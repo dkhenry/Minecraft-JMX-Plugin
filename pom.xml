@@ -17,13 +17,13 @@
                <snapshots>
                     <enabled>false</enabled>
                </snapshots>
-               <id>central</id>
+               <id>Bukkit Central</id>
                <name>libs-release</name>
                     <url>http://repo.bukkit.org/artifactory/libs-release</url>
            </repository>
            <repository>
                <snapshots />
-               <id>snapshots</id>
+               <id>Bukkit Snapshots</id>
                <name>libs-snapshot</name>
               <url>http://repo.bukkit.org/artifactory/libs-snapshot</url>
           </repository>
