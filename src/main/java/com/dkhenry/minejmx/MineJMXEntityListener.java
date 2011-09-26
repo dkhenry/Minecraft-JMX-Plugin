@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause ; 
 
 public class MineJMXEntityListener extends EntityListener {
 	private MineJMX plugin ;
@@ -50,13 +51,13 @@ public class MineJMXEntityListener extends EntityListener {
 		} else {
 			// drowned, burned, fell, etc...increment the environmental death counter
 			switch(cause.getCause()) {
-				case EntityDamageEvent.DamageCause.CONTACT:
-				case EntityDamageEvent.DamageCause.DROWNING:
-				case EntityDamageEvent.DamageCause.FALL:
-				case EntityDamageEvent.DamageCause.FIRE:
-				case EntityDamageEvent.DamageCause.FIRE_TICK:
-				case EntityDamageEvent.DamageCause.LAVA:
-				case EntityDamageEvent.DamageCause.LIGHTNING:
+				case CONTACT:
+				case DROWNING:
+				case FALL:
+				case FIRE:
+				case FIRE_TICK:
+				case LAVA:
+				case LIGHTNING:
 					playerData.incDeathsByEnvironment();
 					break;
 			}
@@ -107,13 +108,13 @@ public class MineJMXEntityListener extends EntityListener {
 		} else {
 			// drowned, burned, fell, etc...increment the environmental death counter
 			switch(cause.getCause()) {
-				case EntityDamageEvent.DamageCause.CONTACT:
-				case EntityDamageEvent.DamageCause.DROWNING:
-				case EntityDamageEvent.DamageCause.FALL:
-				case EntityDamageEvent.DamageCause.FIRE:
-				case EntityDamageEvent.DamageCause.FIRE_TICK:
-				case EntityDamageEvent.DamageCause.LAVA:
-				case EntityDamageEvent.DamageCause.LIGHTNING:
+				case CONTACT:
+				case DROWNING:
+				case FALL:
+				case FIRE:
+				case FIRE_TICK:
+				case LAVA:
+				case LIGHTNING:
 					npeData.incDeathsByEnvironment();
 					break;
 			}
