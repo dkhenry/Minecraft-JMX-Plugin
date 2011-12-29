@@ -7,14 +7,14 @@ from a JMX client ( Jconsole , MX4J , etc. ). Aside form providing Statistics on
 various minecraft actions and provides player and server stats.
 
 ## Configuration
-The plugin will spawn a MineJMX.properties file for you. It currently supports these options
+This plugin now uses the global bukkit configuration file. It currently supports these options
 
 ip
 username
 password
 port
 
-the file is in standard Java properties format __ You Must Change the Username and Password __
+ __ You Must Change the Username and Password __
 
 ## Use
 You can connect to a properly configured server with JConsole
