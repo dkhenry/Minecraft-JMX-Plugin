@@ -442,20 +442,15 @@ public class MineJMX extends JavaPlugin {
 
 		/* Register the Listeners */
 		PluginManager pm = this.getServer().getPluginManager() ;
-		// The Block Events
-		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Event.Priority.Normal ,this) ;
-		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Normal ,this) ;
-		pm.registerEvent(Event.Type.BLOCK_SPREAD, blockListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.LEAVES_DECAY, blockListener, Event.Priority.Normal, this);
+		// The Block Events		
+		pm.registerEvents(blockListener, this) ; 		
 
 		// Player Events
-		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal ,this) ;
-		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal ,this) ;
-		pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Event.Priority.Normal, this);
+		pm.registerEvents(playerListener, this) ; 				
 
 		// Entity Events
-		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Normal ,this) ;
-
+		pm.registerEvents(entityListener, this) ;
+		
 		// Server Events
 		this.tickPoller = new ServerTickPoller(this) ;
 		this.tickPoller.setInterval(40) ;

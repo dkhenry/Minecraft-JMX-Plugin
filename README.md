@@ -6,6 +6,11 @@ This plug-in Allows you to Monitor your Server via JMX. Once enabled it will lis
 from a JMX client ( Jconsole , MX4J , etc. ). Aside form providing Statistics on the JVM and the Minecraft Process it hooks into
 various minecraft actions and provides player and server stats.
 
+## ChangeLog
+
+### 1.2.0 
+Modified the plugin to support the 1.2.x branch of Bukkit 
+
 ## Configuration
 This plugin now uses the global bukkit configuration file. It currently supports these options
 

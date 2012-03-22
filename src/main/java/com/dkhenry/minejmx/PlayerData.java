@@ -49,13 +49,25 @@ public class PlayerData implements DynamicMBean {
 		this.mobsKilled.put("spider", new Integer(0));
 		this.mobsKilled.put("zombie", new Integer(0));
 		this.mobsKilled.put("slime", new Integer(0));
+		this.mobsKilled.put("enderman", new Integer(0));
+		this.mobsKilled.put("blaze", new Integer(0));
+		this.mobsKilled.put("pigman", new Integer(0));
+		this.mobsKilled.put("ghasts", new Integer(0));
+		this.mobsKilled.put("magma", new Integer(0));
 		// animals
 		this.mobsKilled.put("chicken", new Integer(0));
-		this.mobsKilled.put("cow", new Integer(0));
+		this.mobsKilled.put("cow", new Integer(0));		
 		this.mobsKilled.put("pig", new Integer(0));
+		this.mobsKilled.put("dog", new Integer(0));
 		this.mobsKilled.put("sheep", new Integer(0));
 		this.mobsKilled.put("squid", new Integer(0));
 		this.mobsKilled.put("wolf", new Integer(0));
+		this.mobsKilled.put("ocolet", new Integer(0));
+		this.mobsKilled.put("mooshurm", new Integer(0));
+		// NPC
+		this.mobsKilled.put("testificus", new Integer(0));
+		this.mobsKilled.put("irongolom", new Integer(0));
+		this.mobsKilled.put("snowgolom", new Integer(0));
 	}
 
 	// timeOnServer {{{

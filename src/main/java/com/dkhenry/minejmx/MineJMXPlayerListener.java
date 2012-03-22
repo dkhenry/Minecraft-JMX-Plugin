@@ -2,12 +2,13 @@ package com.dkhenry.minejmx;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class MineJMXPlayerListener extends PlayerListener {
+public class MineJMXPlayerListener implements Listener {
 
 	public static MineJMX plugin;
 
@@ -15,7 +16,7 @@ public class MineJMXPlayerListener extends PlayerListener {
 		plugin = instance;
 	}
 
-	@Override
+	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer() ;
 
@@ -34,7 +35,7 @@ public class MineJMXPlayerListener extends PlayerListener {
 		plugin.serverData.incNumberOfPlayers() ;
 	}
 
-	@Override
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer() ;
 		long playerLoggedInTime;
@@ -48,7 +49,7 @@ public class MineJMXPlayerListener extends PlayerListener {
 		plugin.serverData.incPlayTimeBy(playerLoggedInTime);
 	}
 
-	@Override
+	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Location from = event.getFrom(), to = event.getTo();

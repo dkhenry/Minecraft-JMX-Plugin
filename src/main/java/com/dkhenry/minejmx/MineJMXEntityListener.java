@@ -2,14 +2,15 @@ package com.dkhenry.minejmx;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause ; 
 
-public class MineJMXEntityListener extends EntityListener {
+public class MineJMXEntityListener implements Listener {
 	private MineJMX plugin ;
 
 	public MineJMXEntityListener(MineJMX instance) {
@@ -121,7 +122,8 @@ public class MineJMXEntityListener extends EntityListener {
 		}
 	}
 
-	@Override public void onEntityDeath(EntityDeathEvent event) {
+	@EventHandler 
+	public void onEntityDeath(EntityDeathEvent event) {
 		Entity subject = event.getEntity(), predicate;
 
 		if(subject instanceof Player) {

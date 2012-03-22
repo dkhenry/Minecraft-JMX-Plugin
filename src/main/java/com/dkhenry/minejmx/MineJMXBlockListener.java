@@ -3,20 +3,21 @@ package com.dkhenry.minejmx;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 
-public class MineJMXBlockListener extends BlockListener {
+public class MineJMXBlockListener implements Listener {
 	public static MineJMX plugin;
 
 	public MineJMXBlockListener(MineJMX instance) {
 		plugin = instance;
 	}
 
-	@Override
+	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
@@ -34,7 +35,7 @@ public class MineJMXBlockListener extends BlockListener {
 		playerData.incBlocksPlaced() ;
 	}
 
-	@Override
+	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
@@ -52,7 +53,8 @@ public class MineJMXBlockListener extends BlockListener {
 		playerData.incBlocksDestroyed() ;
 	}
 
-	@Override public void onBlockSpread(BlockSpreadEvent event) {
+	@EventHandler 
+	public void onBlockSpread(BlockSpreadEvent event) {
 		Material mat = event.getSource().getType();
 
 		// Increment the per-block stats
@@ -63,7 +65,8 @@ public class MineJMXBlockListener extends BlockListener {
 		plugin.serverData.incBlocksSpread();
 	}
 
-	@Override public void onLeavesDecay(LeavesDecayEvent event) {
+	@EventHandler 
+	public void onLeavesDecay(LeavesDecayEvent event) {
 		Material mat = event.getBlock().getType();
 
 		// Increment the per-block stats
