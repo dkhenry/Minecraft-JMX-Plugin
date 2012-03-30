@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dkhenry</groupId>
 	<artifactId>MineJMX</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.2.1-SNAPSHOT</version>
 	<name>MineJMX</name>
 	<description>Plugin to Allow reporting of Stats via JMX </description>
 	<url>https://github.com/dkhenry/Minecraft-JMX-Plugin</url>
@@ -79,6 +79,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<finalName>MineJMX</finalName>
+		<finalName>MineJMX-1.2</finalName>
 	</build>
 </project>

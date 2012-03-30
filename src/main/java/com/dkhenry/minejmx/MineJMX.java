@@ -1,9 +1,6 @@
 package com.dkhenry.minejmx;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.Class;
 import java.lang.management.ManagementFactory;
@@ -15,7 +12,6 @@ import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -34,7 +30,6 @@ import javax.management.remote.JMXServiceURL;
 import javax.security.auth.Subject;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -64,11 +59,13 @@ public class MineJMX extends JavaPlugin {
 	public Map<String,NpeData> npeData;
 
 	/* The Configure variables */
-	private String username = "admin" ;
-	private String passwd = "passwd" ;
-	private int port = 9999 ;
-	private String ip = "*" ;
-	private static String dir = "plugins" ;
+	private String username = "admin";
+	private String passwd = "passwd";
+	private int port = 9999;
+	private String ip = "*";	
+	private String hostname = null ; 
+	
+	private static String dir = "plugins";
 
 	private static String Persistance = dir + File.separator + "MineJMX.db" ;
 
@@ -90,7 +87,7 @@ public class MineJMX extends JavaPlugin {
 
 	}
 
-	private JmxAuthenticatorImple auth = new JmxAuthenticatorImple() ;
+	private JmxAuthenticatorImple auth = new JmxAuthenticatorImple() ;	
 
 	private ServerTickPoller tickPoller;
 
@@ -103,7 +100,7 @@ public class MineJMX extends JavaPlugin {
                 cfg.addDefault("username", "admin");
                 cfg.addDefault("password", "passwd123");
                 cfg.addDefault("port", 9999);
-                cfg.addDefault("host", "localhost");
+                cfg.addDefault("ip", "*");                
                 cfg.options().copyDefaults(true);
                 this.saveConfig();
                             
@@ -117,7 +114,11 @@ public class MineJMX extends JavaPlugin {
                     this.passwd = cfg.getString("password");
                 }
                 this.port = cfg.getInt("port");
-                this.ip = cfg.getString("host");
+                this.ip = cfg.getString("ip");
+                if( cfg.contains("hostname") ) { 
+                	this.hostname = cfg.getString("hostname") ;
+                }
+                
 
 	}
 
@@ -201,6 +202,13 @@ public class MineJMX extends JavaPlugin {
 	private void enableJMX() {
 		/* Enable the JMX Portion of the System */
 		//acquiring platform MBeanServer
+
+		// Set the hostname if we need to 
+		if(null != this.hostname) {
+			log.info("MineJMX: Using Minecraft Server hostname of: " + this.hostname) ;
+			System.setProperty("java.rmi.server.hostname", this.hostname) ; 
+		}
+		
 		mbs = ManagementFactory.getPlatformMBeanServer();
 		if( null == mbs ) {
 			log.info("Platform MBean Server isnull creating a new mbs") ;
@@ -209,7 +217,7 @@ public class MineJMX extends JavaPlugin {
 
 		//creating JMXConnectorServer instance
 		JMXServiceURL url;
-
+		
 		try {
 			String addr = "127.0.0.1" ;
 			if ( this.ip.equals("")) {
@@ -222,10 +230,11 @@ public class MineJMX extends JavaPlugin {
 				addr = this.ip ;
 				log.info("MineJMX: Using Configured IP of: " + addr) ;
 			}
+						
 			url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"
 			      + addr + ":" + this.port + "/jmxrmi");
 			Map<String, Object> env = new HashMap<String,Object>() ;
-			env.put(JMXConnectorServer.AUTHENTICATOR, auth) ;
+			env.put(JMXConnectorServer.AUTHENTICATOR, auth) ;				
 			log.info("Registering JMX Server On: " + url.toString()) ;
 			cs = JMXConnectorServerFactory.newJMXConnectorServer(url, env , mbs);
 			reg = LocateRegistry.createRegistry(this.port);
