@@ -8,9 +8,6 @@ various minecraft actions and provides player and server stats.
 
 ## ChangeLog
 
-### 1.2.1 
-Added support for server behind a NAT firewall 
-
 ### 1.2.0 
 Modified the plugin to support the 1.2.x branch of Bukkit 
 
@@ -21,27 +18,10 @@ ip
 username
 password
 port
-hostname
 
  __ You Must Change the Username and Password __
 
 ## Use
 You can connect to a properly configured server with JConsole
 e.g. run jconsole , enter service:jmx:rmi:///jndi/rmi://<Your IP>:9999/jmxrmi , username defaults to admin password defaults to passwd
-
-
-## Roadmap 
-
-### 2.0 
-* Better support for new Mob types 
-* Multiple Persistance Options 
-** MySQL DB 
-** Memory
-** MongoDB 
-* Multiple Export Options 
-** JMX 
-** Databases ( Mongo , MySQL ) 
-** REST
-
-
 
