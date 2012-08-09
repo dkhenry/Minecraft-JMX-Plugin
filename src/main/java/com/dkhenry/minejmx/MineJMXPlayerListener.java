@@ -19,7 +19,18 @@ public class MineJMXPlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer() ;
-		plugin.persistance.increment("server","numberOfPlayers",1.0);		
+
+		// Increment The Per Player Stats
+		PlayerData playerData = null ;
+		if(plugin.playerData.containsKey(player.getName())) {
+			playerData = plugin.playerData.get(player.getName()) ;
+		} else {
+			plugin.log.info("MineJMX Found a new first time Player") ;
+		        playerData = new PlayerData(plugin) ;
+			plugin.addPlayer(player.getName(),playerData) ;
+		}
+		playerData.logIn();
+		// ...and the server statistics
 		plugin.serverData.incNumberOfPlayers() ;
 	}
 
